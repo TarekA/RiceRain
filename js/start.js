@@ -14,7 +14,7 @@ function preload() {
     game.load.physics("sprite_physics", "assets/exported_shapes.json");
     game.load.spritesheet('grain', 'assets/grain.png');
     game.load.image('dish', 'assets/dish.png');
-    game.load.audio('rice', 'assets/sound/rice.mp3');
+    game.load.audio('rice', 'assets/sound/rice2.mp3');
 }
 
 function create(){

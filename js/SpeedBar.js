@@ -31,22 +31,22 @@ SpeedBar.prototype.mergeWithDefaultConfiguration = function(new_config) {
         bar: {
             color: '#ADFF2F'
         },
-        animationDuration: 200,
+        animation_duration: 200,
         flipped: false,
     };
 
     return mergeObjects(default_config, new_config);
 }
 
-function mergeObjects(targetObj, newObj) {
-    for (var p in newObj) {
+function mergeObjects(target_obj, new_obj) {
+    for (var p in new_obj) {
         try {
-            targetObj[p] = newObj[p].constructor==Object ? mergeObjetcs(targetObj[p], newObj[p]) : newObj[p];
+            target_obj[p] = new_obj[p].constructor==Object ? mergeObjetcs(target_obj[p], new_obj[p]) : new_obj[p];
         } catch(e) {
-            targetObj[p] = newObj[p];
+            target_obj[p] = new_obj[p];
         }
     }
-    return targetObj;
+    return target_obj;
 }
 
 SpeedBar.prototype.drawBackground = function() {
@@ -57,12 +57,8 @@ SpeedBar.prototype.drawBackground = function() {
     bmd.ctx.rect(0, 0, this.config.width, this.config.height);
     bmd.ctx.fill();
 
-    this.bgSprite = this.game.add.sprite(this.x, this.y, bmd);
-    this.bgSprite.anchor.set(0.5);
-
-    if(this.flipped){
-        this.bgSprite.scale.x = -1;
-    }
+    this.bg_sprite = this.game.add.sprite(this.x, this.y, bmd);
+    this.bg_sprite.anchor.set(0.5);
 };
 
 SpeedBar.prototype.drawSpeedBar = function() {
@@ -70,50 +66,36 @@ SpeedBar.prototype.drawSpeedBar = function() {
     bmd.ctx.fillStyle = this.config.bar.color;
     bmd.ctx.beginPath();
     bmd.ctx.rect(0, 0, this.config.width, this.config.height);
-    //bmd.ctx.fillStyle = '#00685e'; set backgroundcolor of speedbar
     bmd.ctx.fill();
 
-    //this.width_speed = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
-    //this.total_speed = bmd.width;
-
-    this.barSprite = this.game.add.sprite(this.x - this.bgSprite.width/2+5, this.y, bmd);
-    this.barSprite.anchor.y = 0.5;
-
-    //this.barSprite.cropEnabled = true;
-    //this.barSprite.crop(this.width_speed);
-
-    if(this.flipped){
-        this.barSprite.scale.x = -1;
-    }
+    this.bar_sprite = this.game.add.sprite(this.x - this.bg_sprite.width/2+5, this.y, bmd);
+    this.bar_sprite.anchor.y = 0.5;
 };
 
 SpeedBar.prototype.setPosition = function (x, y) {
     this.x = x;
     this.y = y;
 
-    if(this.bgSprite !== undefined && this.barSprite !== undefined){
-        this.bgSprite.position.x = x;
-        this.bgSprite.position.y = y;
+    if(this.bg_sprite !== undefined && this.bar_sprite !== undefined){
+        this.bg_sprite.position.x = x;
+        this.bg_sprite.position.y = y;
 
-        this.barSprite.position.x = x - this.config.width/2;
-        this.barSprite.position.y = y;
+        this.bar_sprite.position.x = x - this.config.width/2;
+        this.bar_sprite.position.y = y;
     }
 };
 
-SpeedBar.prototype.setPercent = function(newValue){
-    if(newValue < 0) newValue = 0;
-    if(newValue > 100) newValue = 100;
+SpeedBar.prototype.setPercent = function(new_value){
+    if(new_value < 0) new_value = 0;
+    if(new_value > 100) new_value = 100;
 
-    var newWidth =  (newValue * this.config.width) / 100;
+    var new_width =  (new_value * this.config.width) / 100;
 
-    this.setWidth(newWidth);
+    this.setWidth(new_width);
 };
 
-SpeedBar.prototype.setWidth = function(newWidth){
-    if(this.flipped) {
-        newWidth = -1 * newWidth;
-    }
-    this.game.add.tween(this.barSprite).to( { width: newWidth }, this.config.animationDuration, Phaser.Easing.Linear.None, true);
+SpeedBar.prototype.setWidth = function(new_width){
+    this.game.add.tween(this.bar_sprite).to( { width: new_width }, this.config.animation_duration, Phaser.Easing.Linear.None, true);
 };
 
 //SpeedBar.prototype = Object.create(Phaser.Sprite.prototype);

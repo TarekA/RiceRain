@@ -29,14 +29,10 @@ gameState.prototype = {
     create: function() {
 
         var speedbar_config = {x: 650, y: 30, speed: 100};
-
         this.speedbar = new SpeedBar(this.game, speedbar_config);
+        this.speedbar.setPercent(50);
 
-        rice = game.add.audio('rice');
-
-        rice.play();
-
-        //this.speedbar.setPercent(50);
+        this.rice = game.add.audio('rice');
 
         //this.load.setPreloadSprite(this.speedbar);
         //this.speedbar.anchor.setTo(0,0);
@@ -188,6 +184,7 @@ gameState.prototype = {
         this.rice.frame = this.game.rnd.integerInRange(0,6);
         this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
         this.rices.add(this.rice);
+        this.rice.play();
     },
     createFloor: function () {
         /*this.floor = this.game.add.sprite(0, 590, 'floor');
