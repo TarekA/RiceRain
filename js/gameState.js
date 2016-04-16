@@ -171,7 +171,7 @@ gameState.prototype = {
 
         //collide with both groups, but do nothing
         this.rice.frame = this.game.rnd.integerInRange(0,6);
-        this.rice.body.collides(this.dishCollisionGroup);
+        this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
         this.rices.add(this.rice);
     },
     createFloor: function () {
