@@ -27,10 +27,8 @@ Fairy = function(game, appear_x, appear_y, disappear_x, disappear_y, velocity){
         Phaser.Sprite.call(this, game, appear_x, appear_y, 'fairy_left');
     }
     
-
-    //this.animations.add('fly');
-
-    //this.sprite.animations.play('fly', 50, true);
+    this.animations.add('fly');
+    this.animations.play('fly', 30, true);
     
     this.vector_length = Math.sqrt((this.disappear_x - this.appear_x)^2 + (this.disappear_y - this.appear_y)^2);
 
