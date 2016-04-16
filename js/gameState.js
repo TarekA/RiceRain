@@ -28,6 +28,23 @@ gameState.prototype = {
 
     create: function() {
 
+        var speedbar_config = {x: 650, y: 30, speed: 100};
+
+        this.speedbar = new SpeedBar(this.game, speedbar_config);
+
+        rice = game.add.audio('rice');
+
+        rice.play();
+
+        //this.speedbar.setPercent(50);
+
+        //this.load.setPreloadSprite(this.speedbar);
+        //this.speedbar.anchor.setTo(0,0);
+        //this.game.add.existing(this.speedbar);
+
+        //this.game.add(this.speedbar);
+
+
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         this.game.physics.p2.defaultRestitution = 0.9;
         this.game.physics.p2.gravity.y = 300;
@@ -41,7 +58,7 @@ gameState.prototype = {
         //this.fairy.scale.setTo(2, 2);
 
         this.game.add.existing(this.fairy);
-        
+
         this.fairy.animations.add('fly');
         this.fairy.animations.play('fly', 30, true);
 

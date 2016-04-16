@@ -22,7 +22,7 @@ SpeedBar.prototype.setupConfiguration = function (prov_config) {
 SpeedBar.prototype.mergeWithDefaultConfiguration = function(new_config) {
     var default_config = {
         width: 300,
-        height: 80,
+        height: 40,
         x: 0,
         y: 0,
         bg: {
@@ -69,7 +69,7 @@ SpeedBar.prototype.drawSpeedBar = function() {
     var bmd = this.game.add.bitmapData(this.config.width-10, this.config.height-10);
     bmd.ctx.fillStyle = this.config.bar.color;
     bmd.ctx.beginPath();
-    bmd.ctx.rect(0, 0, this.config.width, this.config.height-50);
+    bmd.ctx.rect(0, 0, this.config.width, this.config.height);
     //bmd.ctx.fillStyle = '#00685e'; set backgroundcolor of speedbar
     bmd.ctx.fill();
 
