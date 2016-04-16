@@ -5,6 +5,7 @@ var gameState = function(game){
     this.dish;
     this.riceCollisionGroup;
     this.bowlCollisionGroup;
+    this.fairy;
     this.rices;
     this.rice;
 }
@@ -33,6 +34,15 @@ gameState.prototype = {
         this.game.physics.p2.restitution = 1;
         this.game.physics.p2.setImpactEvents(true);
 
+        this.fairy = new Fairy(this.game, 10, 10, 500, 150, 100);
+        this.fairy.anchor.setTo(0, 0);
+        this.fairy.scale.setTo(2, 2);
+
+        //this.game.physics.arcade.moveToXY(this.fairy, 500, 500,  20);
+
+        this.game.add.existing(this.fairy);
+
+        this.game.stage.backgroundColor = '#fff';
         var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
         var worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
         var contactMaterial = this.game.physics.p2.createContactMaterial(spriteMaterial, worldMaterial, { restitution: 1.0 })
@@ -158,6 +168,4 @@ gameState.prototype = {
             this.rices.add(this.rice);
         }
     }
-
-
 }

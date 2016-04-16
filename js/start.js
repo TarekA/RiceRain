@@ -5,6 +5,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 
 function preload() {
     game.load.image('atari', 'assets/dish.png');
+    game.load.image('fairy', 'assets/fairy.jpg');
     game.load.spritesheet('background', 'assets/spritesheets/titlescreen-rice.png');
     game.load.spritesheet('button', 'assets/spritesheets/startbutton-sprite-x2.png', 200, 40);
     game.load.spritesheet('bullets', 'assets/grain.png', 17, 17);
