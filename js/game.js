@@ -45,7 +45,7 @@ function create() {
         ball.body.collides(bowlCollisionGroup);
     }
 
-
+    // game.physics.p2.updateBoundsCollisionGroup();
     game.physics.p2.gravity.y = 400;
     game.physics.p2.enable(balls);
 
@@ -57,10 +57,11 @@ function create() {
 
     atari.body.setCollisionGroup(bowlCollisionGroup);
     atari.body.data.gravityScale = 0;
+    atari.body.fixedRotation = true;
 
 
     //  Enable physics on everything added to the world so far (the true parameter makes it recurse down into children)
-    //game.physics.arcade.enable(game.world, true);
+    // game.physics.arcade.enable(game.world, true);
 
     //atari.body.allowGravity = 0;
     //atari.body.immovable = true;
@@ -77,8 +78,11 @@ function create() {
 }
 
 function riceCaught(bowl, rice){
-    alert("Collision detected");
+    //alert("Collision detected");
+    atari.body.y = 450;
+    atari.body.velocity.y = 0;
 }
+
 
 function fire() {
 
