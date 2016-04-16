@@ -11,9 +11,6 @@ var gameState = function(game){
     this.dishMaterial;
     this.dishHeight;
     this.points;
-    this.centerX;
-    this.centerY;
-    this.radius;
     this.printPoints;
 }
 
@@ -242,21 +239,20 @@ gameState.prototype = {
     },
 
     calculateRice: function() {
-        this.centerX = this.dish.x
-        this.centerY = this.dish.y;
-        this.radius = this.dishHeight;
+        var centerX = this.dish.x
+        var centerY = this.dish.y;
+        var radius = this.dishHeight;
         this.points = 0;
 
-        this.rices.forEachExists(this.checkInsideDish, this);
+        this.rices.forEachExists(this.checkInsideDish, this, centerX, centerY, radius);
 
-        console.log("Points: "+ this.points);
     },
 
-    checkInsideDish: function(rice){
+    checkInsideDish: function(rice, centerX, centerY, radius){
         var x = rice.x;
         var y = rice.y;
-        if((x - this.centerX)*(x - this.centerX) + (y - this.centerY)*(y - this.centerY) < this.radius*this.radius){
-            if(y > this.centerY){
+        if((x - centerX)*(x - centerX) + (y - centerY)*(y - centerY) < radius*radius){
+            if(y > centerY){
                 this.points++;
             }
         }
