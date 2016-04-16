@@ -35,9 +35,10 @@ gameState.prototype = {
         this.game.physics.p2.setImpactEvents(true);
 
         this.fairy = new Fairy(this.game, 10, 10, 500, 150, 100);
-        
+
+        //Resize Fairy:
         //this.fairy.anchor.setTo(0, 0);
-        this.fairy.scale.setTo(2, 2);
+        //this.fairy.scale.setTo(2, 2);
 
         this.game.add.existing(this.fairy);
         
