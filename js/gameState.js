@@ -2,105 +2,83 @@ var gameState = function(game){
     console.log("Hello");
     this.cursors;
     this.floor;
+    this.dish;
     this.riceCollisionGroup;
     this.bowlCollisionGroup;
+    this.rices;
+    this.rice;
 }
-
 
 gameState.prototype = {
 
     fire: function() {
 
-        var ball = balls.getFirstExists(false);
+        var rice = this.rices.getFirstExists(false);
 
-        if (ball)
+        if (rice)
         {
-            ball.frame = this.game.rnd.integerInRange(0,6);
-            ball.exists = true;
-            ball.reset(this.game.world.randomX, 0);
-
-            //ball.body.bounce.y = 0.8;
+            rice.frame = this.game.rnd.integerInRange(0,6);
+            rice.exists = true;
+            rice.reset(this.game.world.randomX, 0);
+            //rice.body.bounce.y = 0.8;
         }
 
     },
 
     create: function() {
+
         this.game.physics.startSystem(Phaser.Physics.P2JS);
+        game.physics.p2.defaultRestitution = 0.8;
+        game.physics.p2.gravity.y = 100;
+        this.game.physics.p2.restitution = 1;
         this.game.physics.p2.setImpactEvents(true);
 
-        this.game.stage.backgroundColor = '#fff';
+        var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
+        var worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
+        var contactMaterial = this.game.physics.p2.createContactMaterial(spriteMaterial, worldMaterial, { restitution: 1.0 })
+
+        this.game.physics.p2.setWorldMaterial(worldMaterial);
+
+        this.game.stage.backgroundColor = '#f9f9f9';
 
         this.riceCollisionGroup = this.game.physics.p2.createCollisionGroup();
         this.bowlCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
-        // this.floor = new Phaser.Rectangle(0, 575, 800, 25);
-        // this.floor.enableBody = true;
-        // this.floor.setCollisionGroup(this.bowlCollisionGroup);
+        this.floor = new Phaser.Rectangle(0, 575, 800, 25);
+        this.game.physics.p2.enable([this.floor], true); // false
+        this.floor.enableBody = true;
 
-        balls = this.game.add.group();
-        balls.enableBody = true;
-        balls.physicsBodyType = Phaser.Physics.P2JS;
-
-        //balls.createMultiple(250, 'bullets', 0, false);
-        for (var i = 0; i < 250; i++)
-        {
-            var ball = balls.create(0,false,'bullets');
-            //panda.body.setRectangle(40, 40);
-
-            ball.body.setCollisionGroup(this.riceCollisionGroup);
-
-            //collide with both groups, but do nothing
-            ball.frame = this.game.rnd.integerInRange(0,6);
-            ball.body.collides(this.bowlCollisionGroup);
-        }
-
-        // this.game.physics.p2.updateBoundsCollisionGroup();
-        this.game.physics.p2.gravity.y = 400;
-        this.game.physics.p2.enable(balls);
-
-
-        atari = this.game.add.sprite(300, 450, 'atari');
-        this.game.physics.p2.enable(atari, false);
-        atari.enableBody = true;
-        atari.physicsBodyType = Phaser.Physics.P2JS;
-
-        atari.body.setCollisionGroup(this.bowlCollisionGroup);
-        atari.body.data.gravityScale = 0;
-        atari.body.fixedRotation = true;
-
+        this.createDish();
 
         //  Enable physics on everything added to the world so far (the true parameter makes it recurse down into children)
         // this.game.physics.arcade.enable(this.game.world, true);
+        this.createRice();
 
-        //atari.body.allowGravity = 0;
-        //atari.body.immovable = true;
-
-        atari.body.setCollisionGroup(this.bowlCollisionGroup);
-        atari.body.collides(this.riceCollisionGroup, this.riceCaught, this);
+        // this.game.physics.p2.updateBoundsCollisionGroup();
+        this.game.physics.p2.gravity.y = 300;
+        this.game.physics.p2.enable(this.rices);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
-
         this.game.time.events.loop(150, this.fire, this);
-
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
     },
 
     riceCaught: function(bowl, rice){
-        //alert("Collision detected");
-        atari.body.y = 450;
-        atari.body.velocity.y = 0;
+        console.log("Collision detected");
+        this.dish.body.y = 450;
+        this.dish.body.velocity.y = 0;
     },
 
-    reflect: function(a, ball) {
-
-        if (ball.y > (atari.y + 5))
+    reflect: function(a, rice) {
+        console.log("reflect");
+        if (rice.y > (this.dish.y + 5))
         {
             return true;
         }
         else
         {
-            ball.body.velocity.x = atari.body.velocity.x;
-            ball.body.velocity.y *= -(ball.body.bounce.y);
+            rice.body.velocity.x = this.dish.body.velocity.x;
+            rice.body.velocity.y *= -(rice.body.bounce.y);
 
             return false;
         }
@@ -108,33 +86,78 @@ gameState.prototype = {
 
     update: function () {
 
-        this.game.physics.arcade.collide(atari, balls, null, this.reflect, this);
+        this.game.physics.arcade.collide(this.dish, this.rice, null, this.reflect, this);
+        this.dish.body.setZeroVelocity();
 
-        atari.body.velocity.x = 0;
-
+        //this.dish.body.velocity.x = 0;
         if (this.cursors.left.isDown)
         {
-            atari.body.velocity.x = -400;
+            //this.dish.body.velocity.x = -400;
+            this.dish.body.moveLeft(400);
         }
         else if (this.cursors.right.isDown)
         {
-            atari.body.velocity.x = 400;
+            //this.dish.body.velocity.x = 400;
+            this.dish.body.moveRight(400);
         }
 
-        balls.forEachAlive(this.checkBounds, this);
-
+        this.rices.forEachAlive(this.checkBounds, this);
     },
 
-    checkBounds: function (ball) {
-
-        if (ball.y > 600)
+    checkBounds: function (rice) {
+        //console.log("checkBounds");
+        if (rice.y > 800)
         {
-            ball.kill();
+            rice.kill();
         }
 
     },
 
     render: function() {
         this.game.debug.geom(this.floor,'#8B4513');
+    },
+    createDish: function () {
+        this.dish = this.game.add.sprite(350, 535, 'dish');
+        game.physics.p2.enable(this.dish);
+        this.game.physics.p2.enable([this.dish], true); // false
+        this.dish.body.clearShapes(); // Get rid of current bounding box
+        this.dish.body.loadPolygon("sprite_physics", "dish"); // // Add our PhysicsEditor bounding shape
+        this.dish.body.setCollisionGroup(this.bowlCollisionGroup);
+        this.dish.body.setZeroDamping(); //  Modify a few body properties
+        this.dish.body.data.gravityScale = 0;
+        this.dish.body.fixedRotation = true; // fixedRotation = true --> dish is fix
+        this.dish.body.allowGravity = 0;
+        this.dish.body.immovable = true;
+        this.dish.body.collideWorldBounds = true;
+        this.dish.body.collides(this.riceCollisionGroup, this.riceCaught, this);
+
+        //this.dish.body.setMaterial(spriteMaterial);
+        //this.dish.physicsBodyType = Phaser.Physics.P2JS;
+        //this.dish.enableBody = true;
+        //this.dish.body.onBeginContact.add(blockHit, this.rice);
+    },
+    createRice: function () {
+
+        this.rices = this.game.add.group();
+        this.rices.enableBody = true;
+        //rices.physicsBodyType = Phaser.Physics.P2JS;
+
+        //rices.createMultiple(250, 'gain', 0, false);
+        for (var i = 0; i < 250; i++)
+        {
+            this.rice = this.game.add.sprite(0,false, 'grain');
+            this.game.physics.p2.enable([this.rice], true); // false
+            this.rice.body.clearShapes(); // Get rid of current bounding box
+            this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
+            this.rice.body.setCollisionGroup(this.riceCollisionGroup);
+            this.dish.body.setZeroDamping();
+
+            //collide with both groups, but do nothing
+            this.rice.frame = this.game.rnd.integerInRange(0,6);
+            this.rice.body.collides(this.bowlCollisionGroup);
+            this.rices.add(this.rice);
+        }
     }
+
+
 }

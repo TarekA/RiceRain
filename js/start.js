@@ -1,11 +1,12 @@
 /**
  * Created by User on 16.04.2016.
  */
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-    game.load.image('atari', 'assets/dish.png');
-    game.load.spritesheet('bullets', 'assets/grain.png');
+    game.load.image('dish', 'assets/dish.png');
+    game.load.spritesheet('grain', 'assets/grain.png');
+    game.load.physics("sprite_physics", "assets/exported_shapes.json");
     //game.load.spritesheet('bullets', 'assets/grain.png', 17, 17);
 }
 
