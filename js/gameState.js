@@ -35,6 +35,20 @@ gameState.prototype = {
 
     create: function() {
 
+        var speedbar_config = {x: 650, y: 30, speed: 100};
+        this.speedbar = new SpeedBar(this.game, speedbar_config);
+        this.speedbar.setPercent(50);
+
+        this.rice_audio = game.add.audio('rice');
+        //this.rice.play();
+
+        //this.load.setPreloadSprite(this.speedbar);
+        //this.speedbar.anchor.setTo(0,0);
+        //this.game.add.existing(this.speedbar);
+
+        //this.game.add(this.speedbar);
+
+
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         this.game.physics.p2.defaultRestitution = 0;
         this.game.physics.p2.gravity.y = 400;
@@ -211,6 +225,7 @@ gameState.prototype = {
         this.rice.frame = this.game.rnd.integerInRange(0,6);
         this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
         this.rices.add(this.rice);
+        this.rice_audio.play();
     },
     createFloor: function () {
         /*this.floor = this.game.add.sprite(0, 590, 'floor');
