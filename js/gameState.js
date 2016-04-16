@@ -8,11 +8,12 @@ var gameState = function(game){
     this.fairy;
     this.rices;
     this.rice;
+    this.dishMaterial;
 }
 
 gameState.prototype = {
 
-    fire: function() {
+   /* fire: function() {
 
         var rice = this.rices.getFirstExists(false);
 
@@ -24,27 +25,14 @@ gameState.prototype = {
             //rice.body.bounce.y = 0.8;
         }
 
-    },
+    },*/
 
     create: function() {
 
-        var speedbar_config = {x: 650, y: 30, speed: 100};
-        this.speedbar = new SpeedBar(this.game, speedbar_config);
-        this.speedbar.setPercent(50);
-
-        this.rice = game.add.audio('rice');
-
-        //this.load.setPreloadSprite(this.speedbar);
-        //this.speedbar.anchor.setTo(0,0);
-        //this.game.add.existing(this.speedbar);
-
-        //this.game.add(this.speedbar);
-
-
         this.game.physics.startSystem(Phaser.Physics.P2JS);
-        this.game.physics.p2.defaultRestitution = 0.9;
-        this.game.physics.p2.gravity.y = 300;
-        this.game.physics.p2.restitution = 0.2;
+        this.game.physics.p2.defaultRestitution = 0;
+        this.game.physics.p2.gravity.y = 400;
+        this.game.physics.p2.restitution = 0;
         this.game.physics.p2.setImpactEvents(true);
 
         this.fairy = new Fairy(this.game, 10, 10, 500, 150, 100);
@@ -55,6 +43,8 @@ gameState.prototype = {
 
         this.game.add.existing(this.fairy);
         
+        this.fairy.animations.add('fly');
+        this.fairy.animations.play('fly', 30, true);
 
         this.game.stage.backgroundColor = '#fff';
         //var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
@@ -69,11 +59,13 @@ gameState.prototype = {
         this.dishCollisionGroup = this.game.physics.p2.createCollisionGroup();
         this.floorCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
-        this.game.physics.p2.updateBoundsCollisionGroup();
+        this.game.physics.p2.updateBoundsCollisionGroup(); // borders
 
         this.createFloor();
         this.createDish();
-        //this.createRice();
+
+        this.dishMaterial = game.physics.p2.createMaterial('dishMaterial', this.dish.body);
+
         this.rices = this.game.add.group();
 
         //this.game.time.events.loop(Phaser.Timer.SECOND, this.createRice(), this);
@@ -84,14 +76,16 @@ gameState.prototype = {
         this.game.physics.p2.enable(this.rices);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
-        this.game.time.events.loop(150, this.fire, this);
+        //this.game.time.events.loop(150, this.fire, this);
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
     },
 
     riceCaught: function(bowl, rice){
         console.log("Collision detected");
         this.dish.body.y = 555;
-        this.dish.body.velocity.y = 0;
+        //this.dish.body.velocity.y = 0;
+       // this.dish.addChild(bowl);
+        rice.data.gravityScale = 3.5;
     },
 
     reflect: function(a, rice) {
@@ -141,6 +135,14 @@ gameState.prototype = {
             rice.kill();
         }
 
+        /*if(rice.x < 10) {
+            rice.kill();
+        }
+
+        if(rice.x > 790) {
+            rice.kill();
+        }*/
+
     },
 
     render: function() {
@@ -178,13 +180,27 @@ gameState.prototype = {
         this.rice.body.clearShapes(); // Get rid of current bounding box
         this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
         this.rice.body.setCollisionGroup(this.riceCollisionGroup);
-        this.rice.body.data.gravityScale = 0.1;
-
+        this.rice.body.data.gravityScale = 1.5;
+        //this.rice.body.gravity.y = 300;
+        //this.rice.body.gravity.x = 600000;
         //collide with both groups, but do nothing
+        //this.rice.frame = this.game.rnd.integerInRange(0,6);
+        this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
+
+        var riceMaterial = game.physics.p2.createMaterial('riceMaterial', this.rice.body);
+        var contactMaterial = game.physics.p2.createContactMaterial(riceMaterial, this.dishMaterial);
+
+        contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
+        contactMaterial.restitution = 0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+        contactMaterial.stiffness = 999;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+        contactMaterial.relaxation = 10;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+        contactMaterial.frictionStiffness = 10;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+        contactMaterial.frictionRelaxation = 100;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+        contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+
         this.rice.frame = this.game.rnd.integerInRange(0,6);
         this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
         this.rices.add(this.rice);
-        this.rice.play();
     },
     createFloor: function () {
         /*this.floor = this.game.add.sprite(0, 590, 'floor');
