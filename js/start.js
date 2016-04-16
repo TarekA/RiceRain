@@ -6,20 +6,17 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 function preload() {
     game.load.image('atari', 'assets/dish.png');
     game.load.spritesheet('bullets', 'assets/grain.png');
-    //game.load.spritesheet('bullets', 'assets/grain.png', 17, 17);
+    game.load.image('background', 'assets/example/rice_copy.png');
+    game.load.spritesheet('button', 'assets/example/button_sprite_sheet.png', 193, 71);
+    game.load.spritesheet('bullets', 'assets/grain.png', 17, 17);
 }
 
 function create(){
-    //var game = new Phaser.Game(320, 480, Phaser.CANVAS, "game");
-    //game.state.add("Start",start);
-    //game.state.add("TitleScreen",titleScreen);
+    game.state.add("TitleScreen",titleScreen);
     game.state.add("GameState",gameState);
-
 }
 function update(){
-    console.log("Start");
-    game.state.start("GameState");
-    console.log("Ende");
+    game.state.start("TitleScreen");
 }
 
 function render() {

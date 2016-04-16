@@ -6,7 +6,6 @@ var gameState = function(game){
     this.bowlCollisionGroup;
 }
 
-
 gameState.prototype = {
 
     fire: function() {
