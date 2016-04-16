@@ -10,26 +10,63 @@ function preload() {
 var atari;
 var balls;
 var cursors;
+var floor;
+var riceCollisionGroup;
+var bowlCollisionGroup;
 
 function create() {
 
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.setImpactEvents(true);
 
     game.stage.backgroundColor = '#fff';
 
-    balls = game.add.group();
+    riceCollisionGroup = game.physics.p2.createCollisionGroup();
+    bowlCollisionGroup = game.physics.p2.createCollisionGroup();
 
-    balls.createMultiple(250, 'bullets', 0, false);
+    // floor = new Phaser.Rectangle(0, 575, 800, 25);
+    // floor.enableBody = true;
+    // floor.setCollisionGroup(bowlCollisionGroup);
+
+    balls = game.add.group();
+    balls.enableBody = true;
+    balls.physicsBodyType = Phaser.Physics.P2JS;
+
+    //balls.createMultiple(250, 'bullets', 0, false);
+    for (var i = 0; i < 250; i++)
+    {
+        var ball = balls.create(0,false,'bullets');
+        //panda.body.setRectangle(40, 40);
+
+        ball.body.setCollisionGroup(riceCollisionGroup);
+
+        //collide with both groups, but do nothing
+        ball.frame = game.rnd.integerInRange(0,6);
+        ball.body.collides(bowlCollisionGroup);
+    }
+
+
+    game.physics.p2.gravity.y = 400;
+    game.physics.p2.enable(balls);
+
 
     atari = game.add.sprite(300, 450, 'atari');
+    game.physics.p2.enable(atari, false);
+    atari.enableBody = true;
+    atari.physicsBodyType = Phaser.Physics.P2JS;
 
-    game.physics.arcade.gravity.y = 400;
+    atari.body.setCollisionGroup(bowlCollisionGroup);
+    atari.body.data.gravityScale = 0;
+
 
     //  Enable physics on everything added to the world so far (the true parameter makes it recurse down into children)
-    game.physics.arcade.enable(game.world, true);
+    //game.physics.arcade.enable(game.world, true);
 
-    atari.body.allowGravity = 0;
-    atari.body.immovable = true;
+    //atari.body.allowGravity = 0;
+    //atari.body.immovable = true;
+
+    atari.body.setCollisionGroup(bowlCollisionGroup);
+    atari.body.collides(riceCollisionGroup, riceCaught, this);
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -37,6 +74,10 @@ function create() {
 
     game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
 
+}
+
+function riceCaught(bowl, rice){
+    alert("Collision detected");
 }
 
 function fire() {
@@ -49,7 +90,7 @@ function fire() {
         ball.exists = true;
         ball.reset(game.world.randomX, 0);
 
-        ball.body.bounce.y = 0.8;
+        //ball.body.bounce.y = 0.8;
     }
 
 }
@@ -99,5 +140,5 @@ function checkBounds(ball) {
 }
 
 function render() {
-
+    game.debug.geom(floor,'#8B4513');
 }
