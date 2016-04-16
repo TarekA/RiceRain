@@ -1,7 +1,9 @@
 var gameState = function(game){
     console.log("Hello");
-    //this.atari;
-    //this.balls;
+    this.cursors;
+    this.floor;
+    this.riceCollisionGroup;
+    this.bowlCollisionGroup;
 }
 
 
@@ -17,35 +19,76 @@ gameState.prototype = {
             ball.exists = true;
             ball.reset(this.game.world.randomX, 0);
 
-            ball.body.bounce.y = 0.8;
+            //ball.body.bounce.y = 0.8;
         }
 
     },
 
     create: function() {
-        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.game.physics.startSystem(Phaser.Physics.P2JS);
+        this.game.physics.p2.setImpactEvents(true);
 
         this.game.stage.backgroundColor = '#fff';
 
-        balls = this.game.add.group();
+        this.riceCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        this.bowlCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
-        balls.createMultiple(250, 'bullets', 0, false);
+        // this.floor = new Phaser.Rectangle(0, 575, 800, 25);
+        // this.floor.enableBody = true;
+        // this.floor.setCollisionGroup(this.bowlCollisionGroup);
+
+        balls = this.game.add.group();
+        balls.enableBody = true;
+        balls.physicsBodyType = Phaser.Physics.P2JS;
+
+        //balls.createMultiple(250, 'bullets', 0, false);
+        for (var i = 0; i < 250; i++)
+        {
+            var ball = balls.create(0,false,'bullets');
+            //panda.body.setRectangle(40, 40);
+
+            ball.body.setCollisionGroup(this.riceCollisionGroup);
+
+            //collide with both groups, but do nothing
+            ball.frame = this.game.rnd.integerInRange(0,6);
+            ball.body.collides(this.bowlCollisionGroup);
+        }
+
+        // this.game.physics.p2.updateBoundsCollisionGroup();
+        this.game.physics.p2.gravity.y = 400;
+        this.game.physics.p2.enable(balls);
+
 
         atari = this.game.add.sprite(300, 450, 'atari');
+        this.game.physics.p2.enable(atari, false);
+        atari.enableBody = true;
+        atari.physicsBodyType = Phaser.Physics.P2JS;
 
-        this.game.physics.arcade.gravity.y = 400;
+        atari.body.setCollisionGroup(this.bowlCollisionGroup);
+        atari.body.data.gravityScale = 0;
+        atari.body.fixedRotation = true;
+
 
         //  Enable physics on everything added to the world so far (the true parameter makes it recurse down into children)
-        this.game.physics.arcade.enable(this.game.world, true);
+        // this.game.physics.arcade.enable(this.game.world, true);
 
-        atari.body.allowGravity = 0;
-        atari.body.immovable = true;
+        //atari.body.allowGravity = 0;
+        //atari.body.immovable = true;
 
-        cursors = this.game.input.keyboard.createCursorKeys();
+        atari.body.setCollisionGroup(this.bowlCollisionGroup);
+        atari.body.collides(this.riceCollisionGroup, this.riceCaught, this);
+
+        this.cursors = this.game.input.keyboard.createCursorKeys();
 
         this.game.time.events.loop(150, this.fire, this);
 
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
+    },
+
+    riceCaught: function(bowl, rice){
+        //alert("Collision detected");
+        atari.body.y = 450;
+        atari.body.velocity.y = 0;
     },
 
     reflect: function(a, ball) {
@@ -69,11 +112,11 @@ gameState.prototype = {
 
         atari.body.velocity.x = 0;
 
-        if (cursors.left.isDown)
+        if (this.cursors.left.isDown)
         {
             atari.body.velocity.x = -400;
         }
-        else if (cursors.right.isDown)
+        else if (this.cursors.right.isDown)
         {
             atari.body.velocity.x = 400;
         }
@@ -92,6 +135,6 @@ gameState.prototype = {
     },
 
     render: function() {
-
+        this.game.debug.geom(this.floor,'#8B4513');
     }
 }
