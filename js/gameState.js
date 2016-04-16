@@ -5,6 +5,7 @@ var gameState = function(game){
     this.dish;
     this.riceCollisionGroup;
     this.bowlCollisionGroup;
+    this.speedbar;
     this.fairy;
     this.rices;
     this.rice;
@@ -27,6 +28,19 @@ gameState.prototype = {
     },
 
     create: function() {
+
+        var speedbar_config = {x: 650, y: 600, speed: 100};
+
+        this.speedbar = new SpeedBar(this.game, speedbar_config);
+
+        //this.speedbar.setPercent(50);
+
+        //this.load.setPreloadSprite(this.speedbar);
+        //this.speedbar.anchor.setTo(0,0);
+        //this.game.add.existing(this.speedbar);
+
+        //this.game.add(this.speedbar);
+
 
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.defaultRestitution = 0.8;
