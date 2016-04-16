@@ -4,7 +4,7 @@ var gameState = function(game){
     this.floor;
     this.dish;
     this.riceCollisionGroup;
-    this.bowlCollisionGroup;
+    this.dishCollisionGroup;
     this.fairy;
     this.rices;
     this.rice;
@@ -29,9 +29,9 @@ gameState.prototype = {
     create: function() {
 
         this.game.physics.startSystem(Phaser.Physics.P2JS);
-        game.physics.p2.defaultRestitution = 0.8;
-        game.physics.p2.gravity.y = 100;
-        this.game.physics.p2.restitution = 1;
+        this.game.physics.p2.defaultRestitution = 0.9;
+        this.game.physics.p2.gravity.y = 300;
+        this.game.physics.p2.restitution = 0.2;
         this.game.physics.p2.setImpactEvents(true);
 
         this.fairy = new Fairy(this.game, 10, 10, 500, 150, 100);
@@ -46,26 +46,27 @@ gameState.prototype = {
         this.fairy.animations.play('fly', 30, true);
 
         this.game.stage.backgroundColor = '#fff';
-        var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
-        var worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
-        var contactMaterial = this.game.physics.p2.createContactMaterial(spriteMaterial, worldMaterial, { restitution: 1.0 })
+        //var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
+        //var worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
+        //var contactMaterial = this.game.physics.p2.createContactMaterial(spriteMaterial, worldMaterial, { restitution: 1.0 })
 
-        this.game.physics.p2.setWorldMaterial(worldMaterial);
+        //this.game.physics.p2.setWorldMaterial(worldMaterial);
 
         this.game.stage.backgroundColor = '#f9f9f9';
 
         this.riceCollisionGroup = this.game.physics.p2.createCollisionGroup();
-        this.bowlCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        this.dishCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        this.floorCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
-        this.floor = new Phaser.Rectangle(0, 575, 800, 25);
-        this.game.physics.p2.enable([this.floor], true); // false
-        this.floor.enableBody = true;
+        this.game.physics.p2.updateBoundsCollisionGroup();
 
+        this.createFloor();
         this.createDish();
+        //this.createRice();
+        this.rices = this.game.add.group();
 
-        //  Enable physics on everything added to the world so far (the true parameter makes it recurse down into children)
-        // this.game.physics.arcade.enable(this.game.world, true);
-        this.createRice();
+        //this.game.time.events.loop(Phaser.Timer.SECOND, this.createRice(), this);
+        this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.createRice, this); // 100mal
 
         // this.game.physics.p2.updateBoundsCollisionGroup();
         this.game.physics.p2.gravity.y = 300;
@@ -78,7 +79,7 @@ gameState.prototype = {
 
     riceCaught: function(bowl, rice){
         console.log("Collision detected");
-        this.dish.body.y = 450;
+        this.dish.body.y = 555;
         this.dish.body.velocity.y = 0;
     },
 
@@ -101,6 +102,11 @@ gameState.prototype = {
 
         this.game.physics.arcade.collide(this.dish, this.rice, null, this.reflect, this);
         this.dish.body.setZeroVelocity();
+
+        //for (var i = 0; i < 250; i++) {
+
+        //}
+        //this.createRice();
 
         //this.dish.body.velocity.x = 0;
         if (this.cursors.left.isDown)
@@ -130,18 +136,17 @@ gameState.prototype = {
         this.game.debug.geom(this.floor,'#8B4513');
     },
     createDish: function () {
-        this.dish = this.game.add.sprite(350, 535, 'dish');
-        game.physics.p2.enable(this.dish);
+        this.dish = this.game.add.sprite(350, 555, 'dish');
         this.game.physics.p2.enable([this.dish], true); // false
         this.dish.body.clearShapes(); // Get rid of current bounding box
         this.dish.body.loadPolygon("sprite_physics", "dish"); // // Add our PhysicsEditor bounding shape
-        this.dish.body.setCollisionGroup(this.bowlCollisionGroup);
+        this.dish.body.setCollisionGroup(this.dishCollisionGroup);
         this.dish.body.setZeroDamping(); //  Modify a few body properties
         this.dish.body.data.gravityScale = 0;
-        this.dish.body.fixedRotation = true; // fixedRotation = true --> dish is fix
+        //this.dish.body.fixedRotation = true; // fixedRotation = true --> dish is fix
         this.dish.body.allowGravity = 0;
         this.dish.body.immovable = true;
-        this.dish.body.collideWorldBounds = true;
+        //this.dish.body.collideWorldBounds = true;
         this.dish.body.collides(this.riceCollisionGroup, this.riceCaught, this);
 
         //this.dish.body.setMaterial(spriteMaterial);
@@ -150,25 +155,36 @@ gameState.prototype = {
         //this.dish.body.onBeginContact.add(blockHit, this.rice);
     },
     createRice: function () {
-
-        this.rices = this.game.add.group();
-        this.rices.enableBody = true;
-        //rices.physicsBodyType = Phaser.Physics.P2JS;
+        //this.rices.enableBody = true;
+        //this.rices.physicsBodyType = Phaser.Physics.P2JS;
 
         //rices.createMultiple(250, 'gain', 0, false);
-        for (var i = 0; i < 250; i++)
-        {
-            this.rice = this.game.add.sprite(0,false, 'grain');
-            this.game.physics.p2.enable([this.rice], true); // false
-            this.rice.body.clearShapes(); // Get rid of current bounding box
-            this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
-            this.rice.body.setCollisionGroup(this.riceCollisionGroup);
-            this.dish.body.setZeroDamping();
 
-            //collide with both groups, but do nothing
-            this.rice.frame = this.game.rnd.integerInRange(0,6);
-            this.rice.body.collides(this.bowlCollisionGroup);
-            this.rices.add(this.rice);
-        }
+        //var position_x = this.game.rnd.integerInRange(5,595);
+
+        this.rice = this.game.add.sprite(this.game.world.randomX,0, 'grain');
+        this.game.physics.p2.enable([this.rice], true); // false
+        this.rice.body.clearShapes(); // Get rid of current bounding box
+        this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
+        this.rice.body.setCollisionGroup(this.riceCollisionGroup);
+        this.rice.body.data.gravityScale = 0.1;
+
+        //collide with both groups, but do nothing
+        this.rice.frame = this.game.rnd.integerInRange(0,6);
+        this.rice.body.collides(this.dishCollisionGroup);
+        this.rices.add(this.rice);
+    },
+    createFloor: function () {
+        /*this.floor = this.game.add.sprite(0, 590, 'floor');
+        this.game.physics.p2.enable([this.floor], true); // false
+        this.floor.body.data.gravityScale = 0;
+        this.floor.body.fixedRotation = true; // fixedRotation = true --> dish is fix
+        this.floor.body.allowGravity = 0;
+        this.floor.body.setCollisionGroup(this.floorCollisionGroup);
+        this.floor.body.collideWorldBounds = true;*/
+
+        this.floor = new Phaser.Rectangle(0, 595, 800, 5);
+        this.game.physics.p2.enable([this.floor], true); // false
+        this.floor.enableBody = true;
     }
 }
