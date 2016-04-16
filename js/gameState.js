@@ -9,6 +9,12 @@ var gameState = function(game){
     this.rices;
     this.rice;
     this.dishMaterial;
+    this.dishHeight;
+    this.points;
+    this.centerX;
+    this.centerY;
+    this.radius;
+    this.printPoints;
 }
 
 gameState.prototype = {
@@ -78,6 +84,7 @@ gameState.prototype = {
         this.cursors = this.game.input.keyboard.createCursorKeys();
         //this.game.time.events.loop(150, this.fire, this);
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
+        this.printPoints = this.game.add.text(200,16, 0, {font: '24px Arial', fill: '#FF0000'});
     },
 
     riceCaught: function(bowl, rice){
@@ -126,6 +133,8 @@ gameState.prototype = {
         }
 
         this.rices.forEachAlive(this.checkBounds, this);
+        this.calculateRice();
+        this.printPoints.setText(this.points);
     },
 
     checkBounds: function (rice) {
@@ -161,6 +170,7 @@ gameState.prototype = {
         this.dish.body.immovable = true;
         //this.dish.body.collideWorldBounds = true;
         this.dish.body.collides(this.riceCollisionGroup, this.riceCaught, this);
+        this.dishHeight = this.dish.height;
 
         //this.dish.body.setMaterial(spriteMaterial);
         //this.dish.physicsBodyType = Phaser.Physics.P2JS;
@@ -214,5 +224,27 @@ gameState.prototype = {
         this.floor = new Phaser.Rectangle(0, 595, 800, 5);
         this.game.physics.p2.enable([this.floor], true); // false
         this.floor.enableBody = true;
+    },
+
+    calculateRice: function() {
+        this.centerX = this.dish.x
+        this.centerY = this.dish.y;
+        this.radius = this.dishHeight;
+        this.points = 0;
+
+        this.rices.forEachExists(this.checkInsideDish, this);
+
+        console.log("Points: "+ this.points);
+    },
+
+    checkInsideDish: function(rice){
+        var x = rice.x;
+        var y = rice.y;
+        if((x - this.centerX)*(x - this.centerX) + (y - this.centerY)*(y - this.centerY) < this.radius*this.radius){
+            if(y > this.centerY){
+                this.points++;
+            }
+        }
     }
+
 }
