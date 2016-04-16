@@ -13,13 +13,14 @@ var cursors;
 
 function create() {
 
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+    //game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.startSystem(Phaser.Physics.P2JS);
 
     game.stage.backgroundColor = '#fff';
 
     balls = game.add.group();
 
-    balls.createMultiple(250, 'bullets', 0, false);
+    balls.createMultiple(10, 'bullets', 0, false);
 
     atari = game.add.sprite(300, 450, 'atari');
 
@@ -49,7 +50,7 @@ function fire() {
         ball.exists = true;
         ball.reset(game.world.randomX, 0);
 
-        ball.body.bounce.y = 0.8;
+        ball.body.bounce.y = 0.4;
     }
 
 }
