@@ -5,7 +5,6 @@ var gameState = function(game){
     this.dish;
     this.riceCollisionGroup;
     this.bowlCollisionGroup;
-    this.speedbar;
     this.fairy;
     this.rices;
     this.rice;
@@ -29,19 +28,6 @@ gameState.prototype = {
 
     create: function() {
 
-        var speedbar_config = {x: 650, y: 600, speed: 100};
-
-        this.speedbar = new SpeedBar(this.game, speedbar_config);
-
-        //this.speedbar.setPercent(50);
-
-        //this.load.setPreloadSprite(this.speedbar);
-        //this.speedbar.anchor.setTo(0,0);
-        //this.game.add.existing(this.speedbar);
-
-        //this.game.add(this.speedbar);
-
-
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.defaultRestitution = 0.8;
         game.physics.p2.gravity.y = 100;
@@ -49,12 +35,14 @@ gameState.prototype = {
         this.game.physics.p2.setImpactEvents(true);
 
         this.fairy = new Fairy(this.game, 10, 10, 500, 150, 100);
-        this.fairy.anchor.setTo(0, 0);
+        
+        //this.fairy.anchor.setTo(0, 0);
         this.fairy.scale.setTo(2, 2);
 
-        //this.game.physics.arcade.moveToXY(this.fairy, 500, 500,  20);
-
         this.game.add.existing(this.fairy);
+        
+        this.fairy.animations.add('fly');
+        this.fairy.animations.play('fly', 30, true);
 
         this.game.stage.backgroundColor = '#fff';
         var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
