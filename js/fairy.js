@@ -45,11 +45,8 @@ Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, 
     
     this.animations.add('fly');
     this.animations.play('fly', 30, true);
-
-    console.log("appear: "+this.appear_x+", disappear: "+this.disappear_x);
-    var test = Math.pow((this.disappear_x - this.appear_x),2) + Math.pow((this.disappear_y - this.appear_y),2);
+    
     this.vector_length = Math.sqrt(Math.pow(this.disappear_x - this.appear_x,2) + Math.pow(this.disappear_y - this.appear_y,2));
-    console.log("vectorlength: "+test);
 
     this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.dropRice, this);
 
