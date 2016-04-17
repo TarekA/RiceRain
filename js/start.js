@@ -15,6 +15,7 @@ function preload() {
     game.load.spritesheet('grain', 'assets/grain.png');
     game.load.image('dish', 'assets/ricedish.png');
     game.load.audio('rice', 'assets/sound/rice2.mp3');
+    game.load.audio('title_music', 'assets/sound/title-music.mp3');
     game.load.image('platform', 'assets/example/platform.png');
 }
 
