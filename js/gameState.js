@@ -217,7 +217,7 @@ gameState.prototype = {
         this.speedbar.setPercent(this.points);
         //this.current_points = this.points;
 
-        if (this.points == 15 || this.dropCounter == 0) {
+        if (this.points == 30 || this.dropCounter == 0) {
             this.finish = true;
             this.background_music.stop();
             game.state.start("GameOverScreen", false, false, this.points);
@@ -283,7 +283,7 @@ gameState.prototype = {
             isBomb = true;
         }
 
-        if(isBomb)
+        if(false)
         {
             this.bomb = this.game.add.sprite(appear_x, appear_y, 'bomb-big');
             this.game.physics.p2.enable([this.bomb], false); // false
