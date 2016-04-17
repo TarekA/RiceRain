@@ -73,8 +73,8 @@ gameState.prototype = {
 
         this.game.add.existing(this.fairy);
         
-        this.fairy.animations.add('fly');
-        this.fairy.animations.play('fly', 30, true);
+        //this.fairy.animations.add('fly');
+        //this.fairy.animations.play('fly', 30, true);
 
         this.game.stage.backgroundColor = '#fff';
         //var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
@@ -114,7 +114,7 @@ gameState.prototype = {
     },
 
     riceCaught: function(bowl, rice){
-        console.log("Collision detected");
+        //console.log("Collision detected");
         this.dish.body.y = 548;
         //this.dish.body.velocity.y = 0;
        // this.dish.addChild(bowl);
