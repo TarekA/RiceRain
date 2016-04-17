@@ -11,9 +11,9 @@ function preload() {
     game.load.spritesheet('background', 'assets/spritesheets/titlescreen-rice.png');
     game.load.spritesheet('button', 'assets/spritesheets/startbutton-sprite-x2.png', 200, 40);
     game.load.spritesheet('bullets', 'assets/grain.png', 17, 17);
-    game.load.physics("sprite_physics", "assets/exported_shapes.json");
+    game.load.physics("sprite_physics", "assets/shapes.json");
     game.load.spritesheet('grain', 'assets/grain.png');
-    game.load.image('dish', 'assets/dish.png');
+    game.load.image('dish', 'assets/ricedish.png');
     game.load.audio('rice', 'assets/sound/rice2.mp3');
 }
 

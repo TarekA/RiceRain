@@ -82,7 +82,7 @@ gameState.prototype = {
 
     riceCaught: function(bowl, rice){
         console.log("Collision detected");
-        this.dish.body.y = 555;
+        this.dish.body.y = 548;
         //this.dish.body.velocity.y = 0;
        // this.dish.addChild(bowl);
         rice.data.gravityScale = 3.5;
@@ -149,13 +149,13 @@ gameState.prototype = {
         this.game.debug.geom(this.floor,'#8B4513');
     },
     createDish: function () {
-        this.dish = this.game.add.sprite(350, 555, 'dish');
+        this.dish = this.game.add.sprite(350, 548, 'dish');
         this.game.physics.p2.enable([this.dish], true); // false
         this.dish.body.clearShapes(); // Get rid of current bounding box
-        this.dish.body.loadPolygon("sprite_physics", "dish"); // // Add our PhysicsEditor bounding shape
+        this.dish.body.loadPolygon("sprite_physics", "ricedish"); // // Add our PhysicsEditor bounding shape
         this.dish.body.setCollisionGroup(this.dishCollisionGroup);
         this.dish.body.setZeroDamping(); //  Modify a few body properties
-        this.dish.body.data.gravityScale = 0;
+        this.dish.body.data.gravityScale = 2;
         //this.dish.body.fixedRotation = true; // fixedRotation = true --> dish is fix
         this.dish.body.allowGravity = 0;
         this.dish.body.immovable = true;
