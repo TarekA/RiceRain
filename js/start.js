@@ -21,6 +21,9 @@ function preload() {
     game.load.audio('startgame', 'assets/sound/startgame.mp3');
     game.load.audio('title_music', 'assets/sound/China_Nervig.mp3');
     game.load.audio('background_music', 'assets/sound/China_Slowboat.mp3')
+    game.load.audio('fairysound', 'assets/sound/fairy_appear.mp3');
+    game.load.audio('lost', 'assets/sound/lost.mp3');
+    game.load.audio('win', 'assets/sound/win.mp3');
     game.load.image('platform', 'assets/example/platform.png');
     game.load.video('vid_gameOver', 'assets/vids/gameover.mp4');
     game.load.image('fairy_effect', 'assets/particles/blue.png');
