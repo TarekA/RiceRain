@@ -44,7 +44,7 @@ gameState.prototype = {
 
         this.rice_audio = game.add.audio('rice');
         this.rice_audio.volume = 0.3;
-        this.background_music = game.add.audio('background_music');
+        this.background_music = new Phaser.Sound(game,'background_music',1,true);
         this.background_music.play();
         //this.rice.play();
 
@@ -54,7 +54,7 @@ gameState.prototype = {
 
         //this.game.add(this.speedbar);
 
-        this.dish_speed = 400;
+        this.dish_speed = 350;
         this.points = 0;
         this.current_points = 0;
 
@@ -167,9 +167,9 @@ gameState.prototype = {
         this.game.physics.arcade.collide(this.dish, this.rice, null, this.reflect, this);
         this.dish.body.setZeroVelocity();
 
-        var diff_points = 0;
-        diff_points = this.points - this.current_points;
-        this.dish_speed = this.dish_speed - (this.dish_speed * diff_points+5) / 100;
+        // var diff_points = 0;
+        // diff_points = this.points - this.current_points;
+        this.dish_speed = 400 - (400 * this.points) / 100;
         console.log(this.dish_speed);
 
         //for (var i = 0; i < 250; i++) {
