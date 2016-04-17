@@ -1,7 +1,6 @@
 var titleScreen = function(game){
     this.btnPlay;
     this.background;
-
 }
 titleScreen.prototype = {
     create: function(){
@@ -13,6 +12,8 @@ titleScreen.prototype = {
 
     },
     startGame: function(){
+        var startsound = game.add.audio('startgame');
+        startsound.play();
         game.state.start("GameState",gameState);
     }
 }
