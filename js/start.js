@@ -29,6 +29,7 @@ function preload() {
     game.load.image('platform', 'assets/example/platform.png');
     game.load.video('vid_gameOver', 'assets/vids/gameover.mp4');
     game.load.image('fairy_effect', 'assets/particles/blue.png');
+    game.load.image('background-main', 'assets/gfx/gamescreen-bg-800x600.png');
 }
 
 function create(){

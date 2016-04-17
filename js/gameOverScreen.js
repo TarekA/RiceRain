@@ -35,7 +35,7 @@ gameOverScreen.prototype = {
         var color;
         var xPos;
         var sound;
-        if(this.points >= 15){
+        if(this.points >= 25){
             color = '#458B00';
             sound = game.add.audio("win");
         }else{

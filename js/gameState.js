@@ -46,12 +46,14 @@ gameState.prototype = {
     create: function() {
 
         this.finish = false;
-        this.update_rice = 0;
+        this.update_race = 0;
         this.riceInBowl = new Array();
         var speedbar_config = {x: 650, y: 30, speed: 30};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
         //this.speedbar.setPercent(50);
         //this.speedbar.setPercent(30);
+
+        this.background = this.game.add.sprite(game.world.centerX, game.world.centerY, 'background-main').anchor.set(0.5);
 
         // ADD SOUND
         this.rice_audio = game.add.audio('rice');
@@ -88,7 +90,7 @@ gameState.prototype = {
         //this.fairy.animations.add('fly');
         //this.fairy.animations.play('fly', 30, true);
 
-        this.game.stage.backgroundColor = '#fff';
+        //this.game.stage.backgroundColor = '#fff';
         //var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
         //var worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
         //var contactMaterial = this.game.physics.p2.createContactMaterial(spriteMaterial, worldMaterial, { restitution: 1.0 })
@@ -207,15 +209,15 @@ gameState.prototype = {
 
         this.rices.forEachAlive(this.checkBounds, this);
         this.update_rice++;
-        if(this.update_rice >= 30){
-        this.update_rice = 0;
+        if(this.update_rice == 30){
+            this.update_rice = 0;
             this.calculateRice();
         }
         this.printPoints.setText(this.points);
         this.speedbar.setPercent(this.points);
         //this.current_points = this.points;
 
-        if (this.points == 30 || this.dropCounter == 0) {
+        if (this.points == 25 || this.dropCounter == 0) {
             this.finish = true;
             this.background_music.stop();
             game.state.start("GameOverScreen", false, false, this.points);
@@ -245,7 +247,7 @@ gameState.prototype = {
     },
     createDish: function () {
         this.dish = this.game.add.sprite(350, 545, 'dish');
-        this.game.physics.p2.enable([this.dish], true); // false
+        this.game.physics.p2.enable([this.dish], false); // false
         this.dish.body.clearShapes(); // Get rid of current bounding box
         this.dish.body.loadPolygon("sprite_physics", "ricedish"); // // Add our PhysicsEditor bounding shape
         this.dish.body.setCollisionGroup(this.dishCollisionGroup);
@@ -257,8 +259,7 @@ gameState.prototype = {
         this.dish.angle = 40;
 
         //this.dish.body.collideWorldBounds = true;
-        this.dish.body.collides([this.riceCollisionGroup], this.riceCaught, this);
-        this.dish.body.collides([this.riceBadCollisionGroup]);
+        this.dish.body.collides([this.riceCollisionGroup, this.riceBadCollisionGroup], this.riceCaught, this);
         this.radius=75;
 
         //this.dish.body.setMaterial(spriteMaterial);
@@ -276,7 +277,7 @@ gameState.prototype = {
 
         var isBomb = false;
         var bad_rice_random = game.rnd.integerInRange(1, 10);
-        if(bad_rice_random == 1)
+        if(bad_rice_random == 5)
         {
             isBomb = true;
         }
