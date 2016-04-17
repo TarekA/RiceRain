@@ -45,8 +45,11 @@ Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, 
     
     this.animations.add('fly');
     this.animations.play('fly', 30, true);
-    
-    this.vector_length = Math.sqrt((this.disappear_x - this.appear_x)^2 + (this.disappear_y - this.appear_y)^2);
+
+    console.log("appear: "+this.appear_x+", disappear: "+this.disappear_x);
+    var test = Math.pow((this.disappear_x - this.appear_x),2) + Math.pow((this.disappear_y - this.appear_y),2);
+    this.vector_length = Math.sqrt(Math.pow(this.disappear_x - this.appear_x,2) + Math.pow(this.disappear_y - this.appear_y,2));
+    console.log("vectorlength: "+test);
 
     this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.dropRice, this);
 
@@ -60,11 +63,12 @@ Fairy.prototype.constructor = Fairy;
  */
 Fairy.prototype.update = function() {
 
-    this.x = this.x + this.velocity*(this.disappear_x-this.appear_x)/(this.vector_length*1000);
-    this.y = this.y + this.velocity*(this.disappear_y-this.appear_y)/(this.vector_length*1000);
+    this.x = this.x + this.velocity*(this.disappear_x-this.appear_x)/(this.vector_length*50);
+    this.y = this.y + this.velocity*(this.disappear_y-this.appear_y)/(this.vector_length*50);
 
-    if((this.x > 800) || (this.y > 600)|| (this.x < 0 )|| (this.y < 0)){
+    if((this.x > 800) || (this.y > 300)|| (this.x <= 0 )|| (this.y <= 0)){
         //console.log("Fairy-Kill");
+        this.gamestate.createFairy();
         this.destroy();
     }
     //this.rices = this.game.add.group();
@@ -73,7 +77,6 @@ Fairy.prototype.update = function() {
 };
 
 Fairy.prototype.dropRice = function() {
-    console.log('rice');
     new Rice(this.gamestate, this.game, this.position.x, this.position.y);
 
     //grain.scale.setTo(2, 2);

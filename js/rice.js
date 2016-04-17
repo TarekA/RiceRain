@@ -13,13 +13,11 @@ var riceProperties = function(game){
 
 Rice = function(gamestate, game, appear_x, appear_y){
 
-        console.log("Rice-Konstruktor");
         this.appear_x = appear_x + 80;
         this.appear_y = appear_y + 80;
         this.gamestate = gamestate;
 
         // Phaser.Sprite.call(this, game, appear_x, appear_y, 'grain');
-        console.log("x: " + this.appear_x + " y: " + this.appear_y);
 
     if(game != null) {
         // this.rice = game.add.sprite(this.appear_x, this.appear_y, 'grain');

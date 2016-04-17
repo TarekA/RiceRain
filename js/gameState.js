@@ -96,6 +96,7 @@ gameState.prototype = {
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
         //this.game.time.events.loop(150, this.fire, this);
+        //this.game.time.events.repeat((Phaser.Timer.SECOND*5), 100, this.createFairy, this);
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
         this.printPoints = this.game.add.text(200,16, 0, {font: '24px Arial', fill: '#FF0000'});
     },
@@ -268,6 +269,21 @@ gameState.prototype = {
     createRice2: function(){
         console.log('rice');
         new Rice(this.game, this.position.x, this.position.y);
-    }
+    },
+
+    createFairy: function(){
+        
+        var appear_x = Math.random()*200;
+        var disappear_x = Math.random()*200;
+
+         if(Math.random()>0.5){
+             this.fairy = new Fairy(this, this.game, appear_x, Math.random()*200, 600+disappear_x , 10+Math.random()*200, 100);
+             this.game.add.existing(this.fairy);
+         } else {
+             this.fairy = new Fairy(this, this.game, 600+appear_x, Math.random()*200, disappear_x , 10+Math.random()*200, 100);
+             this.game.add.existing(this.fairy);
+
+         }
+    },
 
 }
