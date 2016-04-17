@@ -43,6 +43,7 @@ gameState.prototype = {
         //this.speedbar.setPercent(30);
 
         this.rice_audio = game.add.audio('rice');
+        this.rice_audio.volume = 0.5;
         this.background_music = game.add.audio('background_music');
         this.background_music.play();
         //this.rice.play();
