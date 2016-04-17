@@ -34,7 +34,9 @@ gameState.prototype = {
         }
 
     },*/
+    init: function(){
 
+    },
     create: function() {
 
         var speedbar_config = {x: 650, y: 30, speed: 30};
@@ -195,9 +197,9 @@ gameState.prototype = {
         this.speedbar.setPercent(this.points);
         //this.current_points = this.points;
 
-        if (this.points == 15 || this.dropCounter == 0) {
+        if (this.points == 2 || this.dropCounter == 0) {
             this.background_music.stop();
-            game.state.start("GameOverScreen");
+            game.state.start("GameOverScreen", false, false, this.points);
         }
         this.printDropCounter.setText(this.dropCounter)
     },

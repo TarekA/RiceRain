@@ -3,6 +3,9 @@ var titleScreen = function(game){
     this.background;
 }
 titleScreen.prototype = {
+    init: function () {
+
+    },
     create: function(){
         this.background = this.game.add.sprite(game.world.centerX, game.world.centerY, 'background').anchor.set(0.5);
         //this.background.scale.setTo(800, 600);

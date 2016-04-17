@@ -7,8 +7,13 @@ var gameOverScreen = function(game){
     this.video;
     this.sprite;
     this.emitter;
+    this.riceGrains;
+    this.points;
 }
 gameOverScreen.prototype = {
+    init: function(points){
+        this.points = points;
+    },
     create: function(){
         this.background = this.game.add.sprite(game.world.centerX, game.world.centerY, 'bg_gameOver1').anchor.set(0.5);
         this.video = this.game.add.video('vid_gameOver');
@@ -27,6 +32,19 @@ gameOverScreen.prototype = {
     },
     vidComplete: function(){
         this.btnReplay = game.add.button(300, 75, 'replaybutton', this.replayGame, this, 1, 2, 2);
+        var color;
+        var xPos;
+        if(this.points >= 15){
+            color = '#458B00';
+        }else{
+            color = '#DD0000';
+        }
+        if(this.points >= 10){
+            xPos = 385;
+        }else{
+            xPos = 395;
+        }
+        this.riceGrains = game.add.text(xPos,325, this.points, {font: '30px Arial', fill: color});
         //this.emitter = game.add.emitter(game.world.centerX, 100, 600);
         //
         //this.emitter.makeParticles('fairy_effect');
@@ -41,3 +59,4 @@ gameOverScreen.prototype = {
         //this.emitter.start(false, 200, 100);
     }
 }
+
