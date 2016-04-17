@@ -259,7 +259,8 @@ gameState.prototype = {
         this.dish.angle = 40;
 
         //this.dish.body.collideWorldBounds = true;
-        this.dish.body.collides([this.riceCollisionGroup, this.riceBadCollisionGroup], this.riceCaught, this);
+        this.dish.body.collides([this.riceCollisionGroup], this.riceCaught, this);
+        this.dish.body.collides([this.riceBadCollisionGroup]);
         this.radius=75;
 
         //this.dish.body.setMaterial(spriteMaterial);
@@ -276,7 +277,7 @@ gameState.prototype = {
         //var position_x = this.game.rnd.integerInRange(5,595);
 
         var isBomb = false;
-        var bad_rice_random = game.rnd.integerInRange(1, 2);
+        var bad_rice_random = game.rnd.integerInRange(1, 10);
         if(bad_rice_random == 1)
         {
             isBomb = true;
@@ -296,16 +297,16 @@ gameState.prototype = {
             //collide with both groups, but do nothing
             //this.rice.frame = this.game.rnd.integerInRange(0,6);
             this.bomb.sound_played = false;
-            var riceMaterial = game.physics.p2.createMaterial('riceMaterial', this.bomb.body);
-            var contactMaterial = game.physics.p2.createContactMaterial(riceMaterial, this.dishMaterial);
-
-            contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
-            contactMaterial.restitution = 0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
-            contactMaterial.stiffness = 999;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
-            contactMaterial.relaxation = 15;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
-            contactMaterial.frictionStiffness = 10;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
-            contactMaterial.frictionRelaxation = 100;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
-            contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+            //var riceMaterial = game.physics.p2.createMaterial('riceMaterial', this.bomb.body);
+            // var contactMaterial = game.physics.p2.createContactMaterial(riceMaterial, this.dishMaterial);
+            //
+            // contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
+            // contactMaterial.restitution = 0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+            // contactMaterial.stiffness = 999;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+            // contactMaterial.relaxation = 15;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+            // contactMaterial.frictionStiffness = 10;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+            // contactMaterial.frictionRelaxation = 100;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+            // contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
 
             this.bomb.frame = this.game.rnd.integerInRange(0,6);
             this.bomb.body.setCollisionGroup(this.riceBadCollisionGroup);
@@ -348,9 +349,10 @@ gameState.prototype = {
 
         //this.rice_audio.play();
     },
-    riceBadCaughtOnDish: function (bomb, dish, rice) {
+    riceBadCaughtOnDish: function (bomb, dish) {
         console.log("riceBadCaughtOnDish!!!!!!!!!");
 
+        this.bomb_audio.volume = 0.3;
         this.bomb_audio.play();
 
         try {
@@ -408,7 +410,7 @@ gameState.prototype = {
         this.points = 0;
         this.riceInBowl = new Array();
 
-        this.rices.forEachExists(this.checkInsideDish, this, centerX, centerY, radius);
+        this.rices.forEachExists(this.checkInsideDish, this, centerX, centerY);
 
     },
 
