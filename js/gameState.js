@@ -19,6 +19,7 @@ var gameState = function(game){
     this.background_music;
     this.finish;
     this.riceInBowl;
+    this.update_rice;
 }
 
 gameState.prototype = {
@@ -42,6 +43,7 @@ gameState.prototype = {
     create: function() {
 
         this.finish = false;
+        this.update_race = 0;
         this.riceInBowl = new Array();
         var speedbar_config = {x: 650, y: 30, speed: 30};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
@@ -195,8 +197,13 @@ gameState.prototype = {
             this.dish.body.moveRight(this.dish_speed);
         }
 
+
         this.rices.forEachAlive(this.checkBounds, this);
-        this.calculateRice();
+        this.update_rice++;
+        if(this.update_rice == 30){
+            this.update_rice = 0;
+            this.calculateRice();
+        }
         this.printPoints.setText(this.points);
         this.speedbar.setPercent(this.points);
         //this.current_points = this.points;

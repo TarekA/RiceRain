@@ -41,6 +41,7 @@ Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, 
     this.randReverse = Math.random();
 
     var fairy_audio = game.add.audio('fairysound');
+    fairy_audio.volume = 0.05;
     fairy_audio.play();
 
     Phaser.Sprite.call(this, game, appear_x, appear_y, 'fairy');
