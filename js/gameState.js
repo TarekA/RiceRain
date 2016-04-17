@@ -69,8 +69,6 @@ gameState.prototype = {
 
         this.dish_speed = 350;
         this.points = 0;
-        this.current_points = 0;
-
 
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         this.game.physics.p2.defaultRestitution = 0;
@@ -283,7 +281,7 @@ gameState.prototype = {
             isBomb = true;
         }
 
-        if(false)
+        if(isBomb)
         {
             this.bomb = this.game.add.sprite(appear_x, appear_y, 'bomb-big');
             this.game.physics.p2.enable([this.bomb], false); // false
@@ -357,30 +355,34 @@ gameState.prototype = {
 
         try {
             console.log("bomb");
-            bomb.sprite.sound_played = false;
+            bomb.sprite.sound_played = true;
             bomb.sprite.kill();
         }
         catch (err){
 
         }
 
-        try {
-            console.log("dish");
-            dish.sprite.sound_played = false;
-            //dish.sprite.kill();
+        for(var i = 0; i<this.riceInBowl.length; i++){
+            var rice = this.riceInBowl[i];
+            rice.kill();
         }
-        catch (err){
+        // try {
+        //     console.log("dish");
+        //     dish.sprite.sound_played = false;
+        //     //dish.sprite.kill();
+        // }
+        // catch (err){
+        //
+        // }
 
-        }
-
-        try {
-            console.log("rice");
-            rice.sprite.sound_played = false;
-            rice.sprite.kill();
-        }
-        catch (err){
-
-        }
+        // try {
+        //     console.log("rice");
+        //     rice.sprite.sound_played = false;
+        //     rice.sprite.kill();
+        // }
+        // catch (err){
+        //
+        // }
 
     },
     riceBadCaughtOnRice: function (bomb, rise) {
