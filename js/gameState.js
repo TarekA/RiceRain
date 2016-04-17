@@ -16,7 +16,7 @@ var gameState = function(game){
     this.dish_speed;
     this.radius;
     this.dropCounter;
-    this.riceTimer;
+    this.background_music;
 }
 
 gameState.prototype = {
@@ -43,8 +43,8 @@ gameState.prototype = {
         //this.speedbar.setPercent(30);
 
         this.rice_audio = game.add.audio('rice');
-        var background_music = game.add.audio('background_music');
-        background_music.play();
+        this.background_music = game.add.audio('background_music');
+        this.background_music.play();
         //this.rice.play();
 
         //this.load.setPreloadSprite(this.speedbar);
