@@ -24,6 +24,8 @@ var fairyProperties = function(game){
     this.diff_y;
     this.vector_length;
     this.gamestate;
+    this.didReverse;
+    this.randReverse;
 }
 
 Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, velocity){
@@ -35,21 +37,24 @@ Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, 
     this.velocity = velocity;
     this.game = game;
     this.gamestate = gamestate;
+    this.didReverse=false;
+    this.randReverse = Math.random();
 
-    
+    Phaser.Sprite.call(this, game, appear_x, appear_y, 'fairy');
+    this.animations.add('left',[0,1,2,3,4,5,6,7]);
+    this.animations.add('right', [8,9,10,11,12,13,14,15]);
+
     if(this.appear_x < this.disappear_x){
-        Phaser.Sprite.call(this, game, appear_x, appear_y, 'fairy_right');
+        this.animations.play('right', 30, true);
     } else {
-        Phaser.Sprite.call(this, game, appear_x, appear_y, 'fairy_left');
+        this.animations.play('left', 30, true);
     }
-    
-    this.animations.add('fly');
-    this.animations.play('fly', 30, true);
 
     this.vector_length = Math.sqrt(Math.pow(this.disappear_x - this.appear_x,2) + Math.pow(this.disappear_y - this.appear_y,2));
 
     this.gamestate.riceTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.dropRice, this);
 };
+
 
 Fairy.prototype = Object.create(Phaser.Sprite.prototype);
 Fairy.prototype.constructor = Fairy;
@@ -67,6 +72,12 @@ Fairy.prototype.update = function() {
         this.gamestate.createFairy();
         this.destroy();
     }
+
+    if((this.x < 402) && (this.x >398) && (this.didReverse==false) && (this.randReverse <0.5)){
+        this.revertFairy();
+        this.didReverse=true;
+    }
+
     //this.rices = this.game.add.group();
     //this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.dropRice, this);
     //this.game.time.events.loop(Phaser.Timer.SECOND, this.dropRice, this);
@@ -84,7 +95,27 @@ Fairy.prototype.dropRice = function() {
 
     //grain.scale.setTo(2, 2);
 
-}
+};
+
+Fairy.prototype.revertFairy = function(){
+
+    console.log("RevertFairy: "+this.x + " "+ this.y);
+    this.animations.stop();
+    if(this.disappear_x>300){
+        this.appear_x = 600;
+        this.appear_y = 0
+        this.disappear_x =0;
+        this.disappear_y = 50;
+        this.animations.play('left', 30, true);
+    } else {
+        this.appear_x = 0;
+        this.appear_y = 0
+        this.disappear_x = 600;
+        this.disappear_y = 50;
+        this.animations.play('right', 30, true);
+    }
+
+};
 
 
 

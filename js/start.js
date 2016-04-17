@@ -5,9 +5,9 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 
 function preload() {
     game.load.image('floor', 'assets/floor.png');
-    game.load.image('fairy', 'assets/fairy.jpg');
-    game.load.spritesheet('fairy_right', 'assets/spritesheets/fairy-sprite-x8-right.png', 80, 80, 8);
-    game.load.spritesheet('fairy_left', 'assets/spritesheets/fairy-sprite-x8-left.png', 80, 80, 8);
+    //game.load.image('fairy', 'assets/fairy.jpg');
+    game.load.spritesheet('fairy', 'assets/spritesheets/fairy-sprite-x16.png', 80, 80, 16);
+    //game.load.spritesheet('fairy_left', 'assets/spritesheets/fairy-sprite-x8-left.png', 80, 80, 8);
     game.load.spritesheet('background', 'assets/spritesheets/titlescreen-rice.png');
     game.load.spritesheet('bg_gameOver1', 'assets/gfx/gameover00.png');
     game.load.spritesheet('bg_gameOver2', 'assets/gfx/gameover41.png');
