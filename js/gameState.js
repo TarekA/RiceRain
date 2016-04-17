@@ -280,13 +280,13 @@ gameState.prototype = {
     },
 
     checkInsideDish: function(rice, centerX, centerY){
-        var x = rice.x;
-        var y = rice.y;
-        if((x - centerX)*(x - centerX) + (y - centerY)*(y - centerY) < this.radius*this.radius){
-            if(y > centerY){
-                this.points++;
-                return true;
-            }
+        var width = 60;
+        var height = 55;
+        var x = Math.pow(rice.x - centerX, 2)/Math.pow(width,2);
+        var y = Math.pow(rice.y - centerY, 2)/Math.pow(height,2);
+        if(x+y < 1){
+            this.points++;
+            return true;
         }
         return false;
     },
