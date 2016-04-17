@@ -40,6 +40,9 @@ Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, 
     this.didReverse=false;
     this.randReverse = Math.random();
 
+    var fairy_audio = game.add.audio('fairysound');
+    fairy_audio.play();
+
     Phaser.Sprite.call(this, game, appear_x, appear_y, 'fairy');
     this.animations.add('left',[0,1,2,3,4,5,6,7]);
     this.animations.add('right', [8,9,10,11,12,13,14,15]);
