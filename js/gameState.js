@@ -4,9 +4,11 @@ var gameState = function(game){
     this.floor;
     this.dish;
     this.riceCollisionGroup;
+    this.riceBadCollisionGroup;
     this.dishCollisionGroup;
     this.fairy;
     this.rices;
+    this.bombs;
     this.rice;
     this.dishMaterial;
     this.dishHeight;
@@ -49,10 +51,12 @@ gameState.prototype = {
         //this.speedbar.setPercent(50);
         //this.speedbar.setPercent(30);
 
+        // ADD SOUND
         this.rice_audio = game.add.audio('rice');
         this.rice_audio.volume = 0.3;
         this.background_music = new Phaser.Sound(game,'background_music',1,true);
         this.background_music.play();
+        this.bomb_audio = game.add.audio('bomb');
         //this.rice.play();
 
         //this.load.setPreloadSprite(this.speedbar);
@@ -94,6 +98,7 @@ gameState.prototype = {
         this.game.stage.backgroundColor = '#f9f9f9';
 
         this.riceCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        this.riceBadCollisionGroup = this.game.physics.p2.createCollisionGroup();
         this.dishCollisionGroup = this.game.physics.p2.createCollisionGroup();
         this.floorCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
@@ -105,6 +110,7 @@ gameState.prototype = {
         this.dishMaterial = game.physics.p2.createMaterial('dishMaterial', this.dish.body);
 
         this.rices = this.game.add.group();
+        this.bombs = this.game.add.group();
 
         //this.game.time.events.loop(Phaser.Timer.SECOND, this.createRice(), this);
         //this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.createRice, this); // 100mal
@@ -135,10 +141,10 @@ gameState.prototype = {
                 rice.sprite.sound_played = true;
             }
         }
+        console.log(rice.sprite.sound_played);
     },
 
     riceCaughtOnRice: function(rice1, rice2){
-        console.log("Collision detected");
         rice1.data.gravityScale = 3.0;
         if(!rice1.sprite.sound_played){
             if (this.checkInsideDish(rice1.sprite, this.dish.x, this.dish.y)) {
@@ -246,7 +252,7 @@ gameState.prototype = {
         this.dish.angle = 40;
 
         //this.dish.body.collideWorldBounds = true;
-        this.dish.body.collides(this.riceCollisionGroup, this.riceCaught, this);
+        this.dish.body.collides([this.riceCollisionGroup, this.riceBadCollisionGroup], this.riceCaught, this);
         this.radius=75;
 
         //this.dish.body.setMaterial(spriteMaterial);
@@ -262,35 +268,117 @@ gameState.prototype = {
 
         //var position_x = this.game.rnd.integerInRange(5,595);
 
-        this.rice = this.game.add.sprite(appear_x, appear_y, 'grain');
-        this.game.physics.p2.enable([this.rice], true); // false
-        this.rice.body.clearShapes(); // Get rid of current bounding box
-        this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
-        this.rice.body.setCollisionGroup(this.riceCollisionGroup);
-        this.rice.body.data.gravityScale = 1.5;
-        //this.rice.body.gravity.y = 300;
-        //this.rice.body.gravity.x = 600000;
-        //collide with both groups, but do nothing
-        //this.rice.frame = this.game.rnd.integerInRange(0,6);
-        this.rice.sound_played = false;
+        var isBomb = false;
+        var bad_rice_random = game.rnd.integerInRange(1, 2);
+        if(bad_rice_random == 1)
+        {
+            isBomb = true;
+        }
+
+        if(isBomb)
+        {
+            this.bomb = this.game.add.sprite(appear_x, appear_y, 'bomb-big');
+            this.game.physics.p2.enable([this.bomb], false); // false
+            this.bomb.body.clearShapes(); // Get rid of current bounding box
+            this.bomb.body.loadPolygon("sprite_physics", "bomb-big"); // // Add our PhysicsEditor bounding shape
+            this.bomb.body.gravity.y = 600000;
+            this.bomb.body.gravity.x = 600000;
+            this.bomb.body.data.gravityScale = 1.5;
+            //this.rice.body.gravity.y = 300;
+            //this.rice.body.gravity.x = 600000;
+            //collide with both groups, but do nothing
+            //this.rice.frame = this.game.rnd.integerInRange(0,6);
+            this.bomb.sound_played = false;
+            var riceMaterial = game.physics.p2.createMaterial('riceMaterial', this.bomb.body);
+            var contactMaterial = game.physics.p2.createContactMaterial(riceMaterial, this.dishMaterial);
+
+            contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
+            contactMaterial.restitution = 0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+            contactMaterial.stiffness = 999;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+            contactMaterial.relaxation = 15;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+            contactMaterial.frictionStiffness = 10;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+            contactMaterial.frictionRelaxation = 100;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+            contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+
+            this.bomb.frame = this.game.rnd.integerInRange(0,6);
+            this.bomb.body.setCollisionGroup(this.riceBadCollisionGroup);
+            //this.rice.body.collides([this.dishCollisionGroup]);
+            this.bomb.body.collides([this.dishCollisionGroup, this.riceCollisionGroup], this.riceBadCaughtOnDish, this);
+            //this.rice.body.collides([, this.riceBadCollisionGroup], this.riceBadCaughtOnRice, this);
+            this.bombs.add(this.bomb);
+        }
+        else{
+            this.rice = this.game.add.sprite(appear_x, appear_y, 'grain');
+            this.game.physics.p2.enable([this.rice], false); // false
+            this.rice.body.clearShapes(); // Get rid of current bounding box
+            this.rice.body.loadPolygon("sprite_physics", "grain");
+            this.rice.body.data.gravityScale = 1.5;
+            //this.rice.body.gravity.y = 300;
+            //this.rice.body.gravity.x = 600000;
+            //collide with both groups, but do nothing
+            //this.rice.frame = this.game.rnd.integerInRange(0,6);
+            this.rice.sound_played = false;
+            var riceMaterial = game.physics.p2.createMaterial('riceMaterial', this.rice.body);
+            var contactMaterial = game.physics.p2.createContactMaterial(riceMaterial, this.dishMaterial);
+
+            contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
+            contactMaterial.restitution = 0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+            contactMaterial.stiffness = 999;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+            contactMaterial.relaxation = 15;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+            contactMaterial.frictionStiffness = 10;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+            contactMaterial.frictionRelaxation = 100;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+            contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+
+            this.rice.frame = this.game.rnd.integerInRange(0,6);
+            this.rice.body.setCollisionGroup(this.riceCollisionGroup);
+            this.rice.body.collides([this.dishCollisionGroup]);
+            this.rice.body.collides([this.riceCollisionGroup], this.riceCaughtOnRice, this);
+            //this.rice.body.collides([this.riceBadCollisionGroup], this.riceBadCaughtOnRice, this);
+            this.rices.add(this.rice);
+        }
 
 
-        var riceMaterial = game.physics.p2.createMaterial('riceMaterial', this.rice.body);
-        var contactMaterial = game.physics.p2.createContactMaterial(riceMaterial, this.dishMaterial);
 
-        contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
-        contactMaterial.restitution = 0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
-        contactMaterial.stiffness = 999;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
-        contactMaterial.relaxation = 15;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
-        contactMaterial.frictionStiffness = 10;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
-        contactMaterial.frictionRelaxation = 100;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
-        contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
-
-        this.rice.frame = this.game.rnd.integerInRange(0,6);
-        this.rice.body.collides([this.dishCollisionGroup]);
-        this.rice.body.collides([this.riceCollisionGroup], this.riceCaughtOnRice, this);
-        this.rices.add(this.rice);
         //this.rice_audio.play();
+    },
+    riceBadCaughtOnDish: function (bomb, dish, rice) {
+        console.log("riceBadCaughtOnDish!!!!!!!!!");
+
+        this.bomb_audio.play();
+
+        try {
+            console.log("bomb");
+            bomb.sprite.sound_played = false;
+            bomb.sprite.kill();
+        }
+        catch (err){
+
+        }
+
+        try {
+            console.log("dish");
+            dish.sprite.sound_played = false;
+            //dish.sprite.kill();
+        }
+        catch (err){
+
+        }
+
+        try {
+            console.log("rice");
+            rice.sprite.sound_played = false;
+            rice.sprite.kill();
+        }
+        catch (err){
+
+        }
+
+    },
+    riceBadCaughtOnRice: function (bomb, rise) {
+        console.log("riceBadCaughtOnDish!!!!!!!!!----------!!!!!!!");
+        bomb.sprite.kill();
+        rise.sprite.kill();
+
     },
     createFloor: function () {
         /*this.floor = this.game.add.sprite(0, 590, 'floor');
@@ -331,7 +419,7 @@ gameState.prototype = {
     },
     createFloor: function(){
         this.floor = new Phaser.Rectangle(0, 595, 800, 5); // pos x, posY, width, height
-        this.game.physics.p2.enable([this.floor], true); // false - true zeigt den Debugger an
+        this.game.physics.p2.enable([this.floor], false); // false - true zeigt den Debugger an
         this.floor.enableBody = true;
         //this.floor.body.setCollisionGroup(this.floorCollisionGroup);
     },
@@ -353,6 +441,5 @@ gameState.prototype = {
              this.game.add.existing(this.fairy);
 
          }
-    },
-
+    }
 }

@@ -17,7 +17,9 @@ function preload() {
     game.load.physics("sprite_physics", "assets/shapes.json");
     game.load.spritesheet('grain', 'assets/grain.png');
     game.load.image('dish', 'assets/ricedish.png');
+    game.load.image('bomb-big', 'assets/bomb-big.png');
     game.load.audio('rice', 'assets/sound/rice2.mp3');
+    game.load.audio('bomb', 'assets/sound/bomb.mp3');
     game.load.audio('startgame', 'assets/sound/startgame.mp3');
     game.load.audio('title_music', 'assets/sound/China_Nervig.mp3');
     game.load.audio('background_music', 'assets/sound/China_Slowboat.mp3')
@@ -43,5 +45,5 @@ function render() {
 }
 
 function init(){
-    
+
 }
