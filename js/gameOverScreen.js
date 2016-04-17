@@ -26,7 +26,7 @@ gameOverScreen.prototype = {
         game.state.start("GameState",gameState);
     },
     vidComplete: function(){
-        this.btnReplay = game.add.button(300, 75, 'replaybutton', this.replayGame, this, 2, 1, 0);
+        this.btnReplay = game.add.button(300, 75, 'replaybutton', this.replayGame, this, 1, 2, 2);
         //this.emitter = game.add.emitter(game.world.centerX, 100, 600);
         //
         //this.emitter.makeParticles('fairy_effect');

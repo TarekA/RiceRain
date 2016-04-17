@@ -169,12 +169,7 @@ gameState.prototype = {
 
         //var diff_points = 0;
         //diff_points = this.points - this.current_points;
-        this.dish_speed = 400;
-        this.dish_new_speed = this.dish_speed - (this.dish_speed * (this.points*2)) / 100;
-        console.log(this.dish_new_speed);
-        // var diff_points = 0;
-        // diff_points = this.points - this.current_points;
-        this.dish_speed = 400 - (400 * this.points) / 100;
+        this.dish_speed = 400 - (400 * (this.points)) / 100;
         console.log(this.dish_speed);
 
         //for (var i = 0; i < 250; i++) {
@@ -186,12 +181,12 @@ gameState.prototype = {
         if (this.cursors.left.isDown)
         {
             //this.dish.body.velocity.x = -400;
-            this.dish.body.moveLeft(this.dish_new_speed);
+            this.dish.body.moveLeft(this.dish_speed);
         }
         else if (this.cursors.right.isDown)
         {
             //this.dish.body.velocity.x = 400;
-            this.dish.body.moveRight(this.dish_new_speed);
+            this.dish.body.moveRight(this.dish_speed);
         }
 
         this.rices.forEachAlive(this.checkBounds, this);
@@ -200,7 +195,8 @@ gameState.prototype = {
         this.speedbar.setPercent(this.points);
         //this.current_points = this.points;
 
-        if (this.points == 15) {
+        if (this.points == 15 || this.dropCounter == 0) {
+            this.background_music.stop();
             game.state.start("GameOverScreen");
         }
         this.printDropCounter.setText(this.dropCounter)
