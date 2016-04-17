@@ -46,7 +46,7 @@ gameState.prototype = {
     create: function() {
 
         this.finish = false;
-        this.update_race = 0;
+        this.update_rice = 0;
         this.riceInBowl = new Array();
         var speedbar_config = {x: 650, y: 30, speed: 30};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
@@ -209,8 +209,8 @@ gameState.prototype = {
 
         this.rices.forEachAlive(this.checkBounds, this);
         this.update_rice++;
-        if(this.update_rice == 30){
-            this.update_rice = 0;
+        if(this.update_rice >= 30){
+        this.update_rice = 0;
             this.calculateRice();
         }
         this.printPoints.setText(this.points);
