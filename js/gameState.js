@@ -12,6 +12,8 @@ var gameState = function(game){
     this.dishHeight;
     this.points;
     this.printPoints;
+    this.table;
+    this.grain;
 }
 
 gameState.prototype = {
@@ -52,7 +54,7 @@ gameState.prototype = {
         this.game.physics.p2.restitution = 0;
         this.game.physics.p2.setImpactEvents(true);
 
-        this.fairy = new Fairy(this.game, 10, 10, 500, 150, 100);
+        this.fairy = new Fairy(this, this.game, 10, 10, 500, 150, 100);
 
         //Resize Fairy:
         //this.fairy.anchor.setTo(0, 0);
@@ -256,6 +258,16 @@ gameState.prototype = {
                 this.points++;
             }
         }
+    },
+    createFloor: function(){
+        this.floor = new Phaser.Rectangle(0, 595, 800, 5); // pos x, posY, width, height
+        this.game.physics.p2.enable([this.floor], true); // false - true zeigt den Debugger an
+        this.floor.enableBody = true;
+        //this.floor.body.setCollisionGroup(this.floorCollisionGroup);
+    },
+    createRice2: function(){
+        console.log('rice');
+        new Rice(this.game, this.position.x, this.position.y);
     }
 
 }
