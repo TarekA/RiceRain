@@ -25,10 +25,10 @@ SpeedBar.prototype.mergeWithDefaultConfiguration = function(new_config) {
         x: 0,
         y: 0,
         bg: {
-            color: '#8B0000'
+            color: '#FFD700'
         },
         bar: {
-            color: '##8B4513'
+            color: '#00EE00'
         },
         animation_duration: 200,
     };
@@ -87,7 +87,7 @@ SpeedBar.prototype.setPercent = function(new_value){
     if(new_value < 0) new_value = 0;
     if(new_value > 30) new_value = 30;
 
-    var new_width =  (new_value*3 * this.config.width) / 100 + new_value; //this.config.width
+    var new_width =  ((new_value*3 * this.config.width) / 100 + new_value) * 2; //this.config.width
 
     this.setWidth(new_width);
 };
