@@ -8,30 +8,34 @@ var riceProperties = function(game){
     this.appear_x;
     this.appear_y;
     this.dishCollisionGroup;
+    this.gamestate;
 };
 
-Rice = function(game, appear_x, appear_y){
+Rice = function(gamestate, game, appear_x, appear_y){
 
         console.log("Rice-Konstruktor");
-        this.appear_x = appear_x + 100;
-        this.appear_y = appear_y + 150;
+        this.appear_x = appear_x + 80;
+        this.appear_y = appear_y + 80;
+        this.gamestate = gamestate;
 
         // Phaser.Sprite.call(this, game, appear_x, appear_y, 'grain');
         console.log("x: " + this.appear_x + " y: " + this.appear_y);
 
     if(game != null) {
-        this.rice = game.add.sprite(this.appear_x, this.appear_y, 'grain');
-        game.physics.p2.enable([this.rice], true); // false
-        this.rice.body.clearShapes(); // Get rid of current bounding box
-        this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
-        //this.rice.body.setCollisionGroup(this.riceCollisionGroup);
-        this.rice.body.data.gravityScale = 0.1;
+        // this.rice = game.add.sprite(this.appear_x, this.appear_y, 'grain');
+        // game.physics.p2.enable([this.rice], true); // false
+        // this.rice.body.clearShapes(); // Get rid of current bounding box
+        // this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
+        // this.rice.body.setCollisionGroup(gamestate.riceCollisionGroup);
+        // this.rice.body.data.gravityScale = 1.5;
+        gamestate.createRice(this.appear_x, this.appear_y);
 
         //collide with both groups, but do nothing
         //this.rice.frame = game.rnd.integerInRange(0,6);
         //this.rice.body.collides(this.dishCollisionGroup);
         // this.rices.add(this.rice);
     }
+
 };
 
 Rice.prototype = Object.create(Phaser.Sprite.prototype);

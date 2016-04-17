@@ -88,7 +88,7 @@ gameState.prototype = {
         this.rices = this.game.add.group();
 
         //this.game.time.events.loop(Phaser.Timer.SECOND, this.createRice(), this);
-        this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.createRice, this); // 100mal
+        //this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.createRice, this); // 100mal
 
         // this.game.physics.p2.updateBoundsCollisionGroup();
         this.game.physics.p2.gravity.y = 300;
@@ -190,7 +190,7 @@ gameState.prototype = {
         //this.dish.enableBody = true;
         //this.dish.body.onBeginContact.add(blockHit, this.rice);
     },
-    createRice: function () {
+    createRice: function (appear_x, appear_y) {
         //this.rices.enableBody = true;
         //this.rices.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -198,7 +198,7 @@ gameState.prototype = {
 
         //var position_x = this.game.rnd.integerInRange(5,595);
 
-        this.rice = this.game.add.sprite(this.game.world.randomX,0, 'grain');
+        this.rice = this.game.add.sprite(appear_x, appear_y, 'grain');
         this.game.physics.p2.enable([this.rice], true); // false
         this.rice.body.clearShapes(); // Get rid of current bounding box
         this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape

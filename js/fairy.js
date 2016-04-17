@@ -23,9 +23,10 @@ var fairyProperties = function(game){
     this.diff_x;
     this.diff_y;
     this.vector_length;
+    this.gamestate;
 }
 
-Fairy = function(gameState, game, appear_x, appear_y, disappear_x, disappear_y, velocity){
+Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, velocity){
     console.log("Fairy-Konstruktor");
     this.appear_x = appear_x;
     this.appear_y = appear_y;
@@ -33,6 +34,7 @@ Fairy = function(gameState, game, appear_x, appear_y, disappear_x, disappear_y, 
     this.disappear_y = disappear_y;
     this.velocity = velocity;
     this.game = game;
+    this.gamestate = gamestate;
 
     
     if(this.appear_x < this.disappear_x){
@@ -72,7 +74,7 @@ Fairy.prototype.update = function() {
 
 Fairy.prototype.dropRice = function() {
     console.log('rice');
-    new Rice(this.game, this.position.x, this.position.y);
+    new Rice(this.gamestate, this.game, this.position.x, this.position.y);
 
     //grain.scale.setTo(2, 2);
 
