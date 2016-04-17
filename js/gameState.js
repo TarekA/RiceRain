@@ -103,10 +103,10 @@ gameState.prototype = {
 
     riceCaught: function(bowl, rice){
         console.log("Collision detected");
-        this.dish.body.y = 548;
+        this.dish.body.y = 545;
         //this.dish.body.velocity.y = 0;
        // this.dish.addChild(bowl);
-        rice.data.gravityScale = 3.5;
+        rice.data.gravityScale = 3.0;
     },
 
     reflect: function(a, rice) {
@@ -172,16 +172,18 @@ gameState.prototype = {
         this.game.debug.geom(this.floor,'#8B4513');
     },
     createDish: function () {
-        this.dish = this.game.add.sprite(350, 548, 'dish');
+        this.dish = this.game.add.sprite(350, 545, 'dish');
         this.game.physics.p2.enable([this.dish], true); // false
         this.dish.body.clearShapes(); // Get rid of current bounding box
         this.dish.body.loadPolygon("sprite_physics", "ricedish"); // // Add our PhysicsEditor bounding shape
         this.dish.body.setCollisionGroup(this.dishCollisionGroup);
         this.dish.body.setZeroDamping(); //  Modify a few body properties
-        this.dish.body.data.gravityScale = 2;
+        this.dish.body.data.gravityScale = 1.5;
         //this.dish.body.fixedRotation = true; // fixedRotation = true --> dish is fix
-        this.dish.body.allowGravity = 0;
+        this.dish.body.allowGravity = 10;
         this.dish.body.immovable = true;
+        this.dish.angle = 40;
+
         //this.dish.body.collideWorldBounds = true;
         this.dish.body.collides(this.riceCollisionGroup, this.riceCaught, this);
         this.dishHeight = this.dish.height;
@@ -217,7 +219,7 @@ gameState.prototype = {
         contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
         contactMaterial.restitution = 0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
         contactMaterial.stiffness = 999;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
-        contactMaterial.relaxation = 10;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+        contactMaterial.relaxation = 15;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
         contactMaterial.frictionStiffness = 10;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
         contactMaterial.frictionRelaxation = 100;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
         contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
