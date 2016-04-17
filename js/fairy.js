@@ -69,7 +69,9 @@ Fairy.prototype.update = function() {
 
     if((this.x > 800) || (this.y > 300)|| (this.x <= 0 )|| (this.y <= 0)){
         //console.log("Fairy-Kill");
-        this.gamestate.createFairy();
+        if(!this.gamestate.finish) {
+            this.gamestate.createFairy();
+        }
         this.destroy();
     }
 

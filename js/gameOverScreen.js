@@ -34,16 +34,20 @@ gameOverScreen.prototype = {
         this.btnReplay = game.add.button(300, 75, 'replaybutton', this.replayGame, this, 1, 2, 2);
         var color;
         var xPos;
+        var sound;
         if(this.points >= 15){
             color = '#458B00';
+            sound = game.add.audio("win");
         }else{
             color = '#DD0000';
+            sound = game.add.audio("lost");
         }
         if(this.points >= 10){
             xPos = 385;
         }else{
             xPos = 395;
         }
+        sound.play();
         this.riceGrains = game.add.text(xPos,325, this.points, {font: '30px Arial', fill: color});
         //this.emitter = game.add.emitter(game.world.centerX, 100, 600);
         //

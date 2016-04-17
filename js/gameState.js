@@ -17,6 +17,7 @@ var gameState = function(game){
     this.radius;
     this.dropCounter;
     this.background_music;
+    this.finish;
 }
 
 gameState.prototype = {
@@ -39,6 +40,7 @@ gameState.prototype = {
     },
     create: function() {
 
+        this.finish = false;
         var speedbar_config = {x: 650, y: 30, speed: 30};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
         //this.speedbar.setPercent(50);
@@ -197,7 +199,8 @@ gameState.prototype = {
         this.speedbar.setPercent(this.points);
         //this.current_points = this.points;
 
-        if (this.points == 2 || this.dropCounter == 0) {
+        if (this.points == 15 || this.dropCounter == 0) {
+            this.finish = true;
             this.background_music.stop();
             game.state.start("GameOverScreen", false, false, this.points);
         }
