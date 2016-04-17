@@ -16,7 +16,6 @@ var SpeedBar = function (game, prov_config) {
 
 SpeedBar.prototype.setupConfiguration = function (prov_config) {
     this.config = this.mergeWithDefaultConfiguration(prov_config);
-    this.flipped = this.config.flipped
 }
 
 SpeedBar.prototype.mergeWithDefaultConfiguration = function(new_config) {
@@ -26,13 +25,12 @@ SpeedBar.prototype.mergeWithDefaultConfiguration = function(new_config) {
         x: 0,
         y: 0,
         bg: {
-            color: '#FF4500'
+            color: '#8B0000'
         },
         bar: {
-            color: '#ADFF2F'
+            color: '##8B4513'
         },
         animation_duration: 200,
-        flipped: false,
     };
 
     return mergeObjects(default_config, new_config);
@@ -62,7 +60,7 @@ SpeedBar.prototype.drawBackground = function() {
 };
 
 SpeedBar.prototype.drawSpeedBar = function() {
-    var bmd = this.game.add.bitmapData(this.config.width-10, this.config.height-10);
+    var bmd = this.game.add.bitmapData(this.config.width+10, this.config.height-10);
     bmd.ctx.fillStyle = this.config.bar.color;
     bmd.ctx.beginPath();
     bmd.ctx.rect(0, 0, this.config.width, this.config.height);
@@ -87,9 +85,9 @@ SpeedBar.prototype.setPosition = function (x, y) {
 
 SpeedBar.prototype.setPercent = function(new_value){
     if(new_value < 0) new_value = 0;
-    if(new_value > 100) new_value = 100;
+    if(new_value > 30) new_value = 30;
 
-    var new_width =  (new_value * this.config.width) / 100;
+    var new_width =  (new_value*3 * this.config.width) / 100 + new_value; //this.config.width
 
     this.setWidth(new_width);
 };
