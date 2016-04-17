@@ -45,6 +45,8 @@ gameState.prototype = {
     },
     create: function() {
 
+
+        this.background = this.game.add.sprite(game.world.centerX, game.world.centerY, 'background-main').anchor.set(0.5);
         this.finish = false;
         this.update_race = 0;
         this.riceInBowl = new Array();
@@ -53,7 +55,7 @@ gameState.prototype = {
         //this.speedbar.setPercent(50);
         //this.speedbar.setPercent(30);
 
-        this.background = this.game.add.sprite(game.world.centerX, game.world.centerY, 'background-main').anchor.set(0.5);
+
 
         // ADD SOUND
         this.rice_audio = game.add.audio('rice');
