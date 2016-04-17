@@ -9,6 +9,11 @@ var gameState = function(game){
     this.rices;
     this.rice;
     this.dishMaterial;
+    this.dishHeight;
+    this.points;
+    this.printPoints;
+    this.table;
+    this.grain;
 }
 
 gameState.prototype = {
@@ -29,13 +34,27 @@ gameState.prototype = {
 
     create: function() {
 
+        var speedbar_config = {x: 650, y: 30, speed: 100};
+        this.speedbar = new SpeedBar(this.game, speedbar_config);
+        this.speedbar.setPercent(50);
+
+        this.rice_audio = game.add.audio('rice');
+        //this.rice.play();
+
+        //this.load.setPreloadSprite(this.speedbar);
+        //this.speedbar.anchor.setTo(0,0);
+        //this.game.add.existing(this.speedbar);
+
+        //this.game.add(this.speedbar);
+
+
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         this.game.physics.p2.defaultRestitution = 0;
         this.game.physics.p2.gravity.y = 400;
         this.game.physics.p2.restitution = 0;
         this.game.physics.p2.setImpactEvents(true);
 
-        this.fairy = new Fairy(this.game, 10, 10, 500, 150, 100);
+        this.fairy = new Fairy(this, this.game, 10, 10, 500, 150, 100);
 
         //Resize Fairy:
         //this.fairy.anchor.setTo(0, 0);
@@ -69,7 +88,7 @@ gameState.prototype = {
         this.rices = this.game.add.group();
 
         //this.game.time.events.loop(Phaser.Timer.SECOND, this.createRice(), this);
-        this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.createRice, this); // 100mal
+        //this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.createRice, this); // 100mal
 
         // this.game.physics.p2.updateBoundsCollisionGroup();
         this.game.physics.p2.gravity.y = 300;
@@ -77,7 +96,9 @@ gameState.prototype = {
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
         //this.game.time.events.loop(150, this.fire, this);
+        //this.game.time.events.repeat((Phaser.Timer.SECOND*5), 100, this.createFairy, this);
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
+        this.printPoints = this.game.add.text(200,16, 0, {font: '24px Arial', fill: '#FF0000'});
     },
 
     riceCaught: function(bowl, rice){
@@ -126,6 +147,8 @@ gameState.prototype = {
         }
 
         this.rices.forEachAlive(this.checkBounds, this);
+        this.calculateRice();
+        this.printPoints.setText(this.points);
     },
 
     checkBounds: function (rice) {
@@ -161,13 +184,14 @@ gameState.prototype = {
         this.dish.body.immovable = true;
         //this.dish.body.collideWorldBounds = true;
         this.dish.body.collides(this.riceCollisionGroup, this.riceCaught, this);
+        this.dishHeight = this.dish.height;
 
         //this.dish.body.setMaterial(spriteMaterial);
         //this.dish.physicsBodyType = Phaser.Physics.P2JS;
         //this.dish.enableBody = true;
         //this.dish.body.onBeginContact.add(blockHit, this.rice);
     },
-    createRice: function () {
+    createRice: function (appear_x, appear_y) {
         //this.rices.enableBody = true;
         //this.rices.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -175,7 +199,7 @@ gameState.prototype = {
 
         //var position_x = this.game.rnd.integerInRange(5,595);
 
-        this.rice = this.game.add.sprite(this.game.world.randomX,0, 'grain');
+        this.rice = this.game.add.sprite(appear_x, appear_y, 'grain');
         this.game.physics.p2.enable([this.rice], true); // false
         this.rice.body.clearShapes(); // Get rid of current bounding box
         this.rice.body.loadPolygon("sprite_physics", "grain"); // // Add our PhysicsEditor bounding shape
@@ -201,6 +225,7 @@ gameState.prototype = {
         this.rice.frame = this.game.rnd.integerInRange(0,6);
         this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
         this.rices.add(this.rice);
+        this.rice_audio.play();
     },
     createFloor: function () {
         /*this.floor = this.game.add.sprite(0, 590, 'floor');
@@ -214,5 +239,51 @@ gameState.prototype = {
         this.floor = new Phaser.Rectangle(0, 595, 800, 5);
         this.game.physics.p2.enable([this.floor], true); // false
         this.floor.enableBody = true;
-    }
+    },
+
+    calculateRice: function() {
+        var centerX = this.dish.x
+        var centerY = this.dish.y;
+        var radius = this.dishHeight;
+        this.points = 0;
+
+        this.rices.forEachExists(this.checkInsideDish, this, centerX, centerY, radius);
+
+    },
+
+    checkInsideDish: function(rice, centerX, centerY, radius){
+        var x = rice.x;
+        var y = rice.y;
+        if((x - centerX)*(x - centerX) + (y - centerY)*(y - centerY) < radius*radius){
+            if(y > centerY){
+                this.points++;
+            }
+        }
+    },
+    createFloor: function(){
+        this.floor = new Phaser.Rectangle(0, 595, 800, 5); // pos x, posY, width, height
+        this.game.physics.p2.enable([this.floor], true); // false - true zeigt den Debugger an
+        this.floor.enableBody = true;
+        //this.floor.body.setCollisionGroup(this.floorCollisionGroup);
+    },
+    createRice2: function(){
+        console.log('rice');
+        new Rice(this.game, this.position.x, this.position.y);
+    },
+
+    createFairy: function(){
+        
+        var appear_x = Math.random()*200;
+        var disappear_x = Math.random()*200;
+
+         if(Math.random()>0.5){
+             this.fairy = new Fairy(this, this.game, appear_x, Math.random()*200, 600+disappear_x , 10+Math.random()*200, 100);
+             this.game.add.existing(this.fairy);
+         } else {
+             this.fairy = new Fairy(this, this.game, 600+appear_x, Math.random()*200, disappear_x , 10+Math.random()*200, 100);
+             this.game.add.existing(this.fairy);
+
+         }
+    },
+
 }
