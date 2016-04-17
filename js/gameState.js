@@ -14,6 +14,8 @@ var gameState = function(game){
     this.table;
     this.grain;
     this.radius;
+    this.dropCounter;
+    this.riceTimer;
 }
 
 gameState.prototype = {
@@ -39,6 +41,7 @@ gameState.prototype = {
         this.speedbar.setPercent(50);
 
         this.rice_audio = game.add.audio('rice');
+        this.started = false;
         //this.rice.play();
 
         //this.load.setPreloadSprite(this.speedbar);
@@ -54,6 +57,7 @@ gameState.prototype = {
         this.game.physics.p2.restitution = 0;
         this.game.physics.p2.setImpactEvents(true);
 
+        this.dropCounter = 100;
         this.fairy = new Fairy(this, this.game, 10, 10, 500, 150, 100);
 
         //Resize Fairy:
@@ -99,6 +103,7 @@ gameState.prototype = {
         //this.game.time.events.repeat((Phaser.Timer.SECOND*5), 100, this.createFairy, this);
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
         this.printPoints = this.game.add.text(200,16, 0, {font: '24px Arial', fill: '#FF0000'});
+        this.printDropCounter = this.game.add.text(240,16, this.dropCounter, {font: '24px Arial', fill: '#00FF00'});
     },
 
     riceCaught: function(bowl, rice){
@@ -113,7 +118,6 @@ gameState.prototype = {
                 rice.sprite.sound_played = true;
             }
         }
-        console.log(rice.sprite.sound_played);
     },
 
     riceCaughtOnRice: function(rice1, rice2){
@@ -175,6 +179,7 @@ gameState.prototype = {
         this.rices.forEachAlive(this.checkBounds, this);
         this.calculateRice();
         this.printPoints.setText(this.points);
+        this.printDropCounter.setText(this.dropCounter)
     },
 
     checkBounds: function (rice) {

@@ -45,11 +45,10 @@ Fairy = function(gamestate, game, appear_x, appear_y, disappear_x, disappear_y, 
     
     this.animations.add('fly');
     this.animations.play('fly', 30, true);
-    
+
     this.vector_length = Math.sqrt(Math.pow(this.disappear_x - this.appear_x,2) + Math.pow(this.disappear_y - this.appear_y,2));
 
-    this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.dropRice, this);
-
+    this.gamestate.riceTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.dropRice, this);
 };
 
 Fairy.prototype = Object.create(Phaser.Sprite.prototype);
@@ -74,7 +73,14 @@ Fairy.prototype.update = function() {
 };
 
 Fairy.prototype.dropRice = function() {
-    new Rice(this.gamestate, this.game, this.position.x, this.position.y);
+    console.log("dropCalled")
+    if(this.gamestate.dropCounter>0) {
+        if (this.position.x > 0 && this.position.x < 800 && this.position.y > 0 && this.position.y < 300) {
+            new Rice(this.gamestate, this.game, this.position.x, this.position.y);
+            this.gamestate.dropCounter--;
+        }
+    }
+
 
     //grain.scale.setTo(2, 2);
 
