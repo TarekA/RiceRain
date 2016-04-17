@@ -14,6 +14,7 @@ var gameState = function(game){
     this.printPoints;
     this.table;
     this.grain;
+    this.radius;
 }
 
 gameState.prototype = {
@@ -107,6 +108,33 @@ gameState.prototype = {
         //this.dish.body.velocity.y = 0;
        // this.dish.addChild(bowl);
         rice.data.gravityScale = 3.0;
+        if(!rice.sprite.sound_played) {
+            if (this.checkInsideDish(rice.sprite, this.dish.x, this.dish.y)) {
+                this.rice_audio.play();
+                rice.sprite.sound_played = true;
+            }
+        }
+        console.log(rice.sprite.sound_played);
+    },
+
+    riceCaughtOnRice: function(rice1, rice2){
+        console.log("Collision detected");
+        rice1.data.gravityScale = 3.0;
+        if(!rice1.sprite.sound_played){
+            if (this.checkInsideDish(rice1.sprite, this.dish.x, this.dish.y)) {
+                this.rice_audio.play();
+                rice1.sprite.sound_played = true;
+            }
+        }
+
+        rice2.data.gravityScale = 3.5;
+        if(!rice2.sprite.sound_played){
+            if (this.checkInsideDish(rice2.sprite, this.dish.x, this.dish.y)) {
+                this.rice_audio.play();
+                rice2.sprite.sound_played = true;
+            }
+        }
+        rice.data.gravityScale = 3.0;
     },
 
     reflect: function(a, rice) {
@@ -186,7 +214,7 @@ gameState.prototype = {
 
         //this.dish.body.collideWorldBounds = true;
         this.dish.body.collides(this.riceCollisionGroup, this.riceCaught, this);
-        this.dishHeight = this.dish.height;
+        this.radius=75;
 
         //this.dish.body.setMaterial(spriteMaterial);
         //this.dish.physicsBodyType = Phaser.Physics.P2JS;
@@ -211,7 +239,8 @@ gameState.prototype = {
         //this.rice.body.gravity.x = 600000;
         //collide with both groups, but do nothing
         //this.rice.frame = this.game.rnd.integerInRange(0,6);
-        this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
+        this.rice.sound_played = false;
+
 
         var riceMaterial = game.physics.p2.createMaterial('riceMaterial', this.rice.body);
         var contactMaterial = game.physics.p2.createContactMaterial(riceMaterial, this.dishMaterial);
@@ -225,9 +254,10 @@ gameState.prototype = {
         contactMaterial.surfaceVelocity = 1;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
 
         this.rice.frame = this.game.rnd.integerInRange(0,6);
-        this.rice.body.collides([this.dishCollisionGroup, this.riceCollisionGroup]);
+        this.rice.body.collides([this.dishCollisionGroup]);
+        this.rice.body.collides([this.riceCollisionGroup], this.riceCaughtOnRice, this);
         this.rices.add(this.rice);
-        this.rice_audio.play();
+        //this.rice_audio.play();
     },
     createFloor: function () {
         /*this.floor = this.game.add.sprite(0, 590, 'floor');
@@ -246,21 +276,23 @@ gameState.prototype = {
     calculateRice: function() {
         var centerX = this.dish.x
         var centerY = this.dish.y;
-        var radius = this.dishHeight;
+        var radius = 75;
         this.points = 0;
 
         this.rices.forEachExists(this.checkInsideDish, this, centerX, centerY, radius);
 
     },
 
-    checkInsideDish: function(rice, centerX, centerY, radius){
-        var x = rice.x;
-        var y = rice.y;
-        if((x - centerX)*(x - centerX) + (y - centerY)*(y - centerY) < radius*radius){
-            if(y > centerY){
-                this.points++;
-            }
+    checkInsideDish: function(rice, centerX, centerY){
+        var width = 60;
+        var height = 55;
+        var x = Math.pow(rice.x - centerX, 2)/Math.pow(width,2);
+        var y = Math.pow(rice.y - centerY, 2)/Math.pow(height,2);
+        if(x+y < 1){
+            this.points++;
+            return true;
         }
+        return false;
     },
     createFloor: function(){
         this.floor = new Phaser.Rectangle(0, 595, 800, 5); // pos x, posY, width, height
