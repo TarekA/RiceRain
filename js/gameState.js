@@ -40,7 +40,7 @@ gameState.prototype = {
         var speedbar_config = {x: 650, y: 30, speed: 30};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
         //this.speedbar.setPercent(50);
-        this.speedbar.setPercent(30);
+        //this.speedbar.setPercent(30);
 
         this.rice_audio = game.add.audio('rice');
         this.started = false;
@@ -190,7 +190,7 @@ gameState.prototype = {
         this.rices.forEachAlive(this.checkBounds, this);
         this.calculateRice();
         this.printPoints.setText(this.points);
-        //this.speedbar.setPercent(this.points);
+        this.speedbar.setPercent(this.points);
         this.current_points = this.points;
 
         if (this.current_points == 30) {
