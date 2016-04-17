@@ -14,7 +14,12 @@ var gameState = function(game){
     this.printPoints;
     this.table;
     this.grain;
+    this.dish_speed;
     this.radius;
+    this.dropCounter;
+    this.background_music;
+    this.finish;
+    this.riceInBowl;
 }
 
 gameState.prototype = {
@@ -32,14 +37,22 @@ gameState.prototype = {
         }
 
     },*/
+    init: function(){
 
+    },
     create: function() {
 
-        var speedbar_config = {x: 650, y: 30, speed: 100};
+        this.finish = false;
+        this.riceInBowl = new Array();
+        var speedbar_config = {x: 650, y: 30, speed: 30};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
-        this.speedbar.setPercent(50);
+        //this.speedbar.setPercent(50);
+        //this.speedbar.setPercent(30);
 
         this.rice_audio = game.add.audio('rice');
+        this.rice_audio.volume = 0.3;
+        this.background_music = new Phaser.Sound(game,'background_music',1,true);
+        this.background_music.play();
         //this.rice.play();
 
         //this.load.setPreloadSprite(this.speedbar);
@@ -48,6 +61,10 @@ gameState.prototype = {
 
         //this.game.add(this.speedbar);
 
+        this.dish_speed = 350;
+        this.points = 0;
+        this.current_points = 0;
+
 
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         this.game.physics.p2.defaultRestitution = 0;
@@ -55,6 +72,7 @@ gameState.prototype = {
         this.game.physics.p2.restitution = 0;
         this.game.physics.p2.setImpactEvents(true);
 
+        this.dropCounter = 100;
         this.fairy = new Fairy(this, this.game, 10, 10, 500, 150, 100);
 
         //Resize Fairy:
@@ -63,8 +81,8 @@ gameState.prototype = {
 
         this.game.add.existing(this.fairy);
         
-        this.fairy.animations.add('fly');
-        this.fairy.animations.play('fly', 30, true);
+        //this.fairy.animations.add('fly');
+        //this.fairy.animations.play('fly', 30, true);
 
         this.game.stage.backgroundColor = '#fff';
         //var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
@@ -100,9 +118,12 @@ gameState.prototype = {
         //this.game.time.events.repeat((Phaser.Timer.SECOND*5), 100, this.createFairy, this);
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
         this.printPoints = this.game.add.text(200,16, 0, {font: '24px Arial', fill: '#FF0000'});
+        this.printDropCounter = this.game.add.text(240,16, this.dropCounter, {font: '24px Arial', fill: '#00FF00'});
     },
 
     riceCaught: function(bowl, rice){
+        //console.log("Collision detected");
+
         console.log("Collision detected");
         this.dish.body.y = 545;
         //this.dish.body.velocity.y = 0;
@@ -114,7 +135,6 @@ gameState.prototype = {
                 rice.sprite.sound_played = true;
             }
         }
-        console.log(rice.sprite.sound_played);
     },
 
     riceCaughtOnRice: function(rice1, rice2){
@@ -127,14 +147,13 @@ gameState.prototype = {
             }
         }
 
-        rice2.data.gravityScale = 3.5;
+        rice2.data.gravityScale = 3.0;
         if(!rice2.sprite.sound_played){
             if (this.checkInsideDish(rice2.sprite, this.dish.x, this.dish.y)) {
                 this.rice_audio.play();
                 rice2.sprite.sound_played = true;
             }
         }
-        rice.data.gravityScale = 3.0;
     },
 
     reflect: function(a, rice) {
@@ -157,6 +176,11 @@ gameState.prototype = {
         this.game.physics.arcade.collide(this.dish, this.rice, null, this.reflect, this);
         this.dish.body.setZeroVelocity();
 
+        //var diff_points = 0;
+        //diff_points = this.points - this.current_points;
+        this.dish_speed = 400 - (400 * (this.points)) / 100;
+        console.log(this.dish_speed);
+
         //for (var i = 0; i < 250; i++) {
 
         //}
@@ -166,17 +190,26 @@ gameState.prototype = {
         if (this.cursors.left.isDown)
         {
             //this.dish.body.velocity.x = -400;
-            this.dish.body.moveLeft(400);
+            this.dish.body.moveLeft(this.dish_speed);
         }
         else if (this.cursors.right.isDown)
         {
             //this.dish.body.velocity.x = 400;
-            this.dish.body.moveRight(400);
+            this.dish.body.moveRight(this.dish_speed);
         }
 
         this.rices.forEachAlive(this.checkBounds, this);
         this.calculateRice();
         this.printPoints.setText(this.points);
+        this.speedbar.setPercent(this.points);
+        //this.current_points = this.points;
+
+        if (this.points == 15 || this.dropCounter == 0) {
+            this.finish = true;
+            this.background_music.stop();
+            game.state.start("GameOverScreen", false, false, this.points);
+        }
+        this.printDropCounter.setText(this.dropCounter)
     },
 
     checkBounds: function (rice) {
@@ -278,6 +311,7 @@ gameState.prototype = {
         var centerY = this.dish.y;
         var radius = 75;
         this.points = 0;
+        this.riceInBowl = new Array();
 
         this.rices.forEachExists(this.checkInsideDish, this, centerX, centerY, radius);
 
@@ -290,6 +324,7 @@ gameState.prototype = {
         var y = Math.pow(rice.y - centerY, 2)/Math.pow(height,2);
         if(x+y < 1){
             this.points++;
+            this.riceInBowl.push(rice);
             return true;
         }
         return false;
