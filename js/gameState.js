@@ -185,6 +185,8 @@ gameState.prototype = {
     checkBombBounds: function (bomb) {
         if(bomb.y > 592)
         {
+            this.bomb_audio.volume = 0.3;
+            this.bomb_audio.play();
             bomb.kill();
         }
     },
