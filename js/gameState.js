@@ -11,11 +11,8 @@ var gameState = function(game){
     this.bombs;
     this.rice;
     this.dishMaterial;
-    this.dishHeight;
     this.points;
     this.printPoints;
-    this.table;
-    this.grain;
     this.dish_speed;
     this.radius;
     this.dropCounter;
@@ -23,34 +20,21 @@ var gameState = function(game){
     this.finish;
     this.riceInBowl;
     this.update_rice;
+    this.goal = 25;
 }
 
 gameState.prototype = {
-
-   /* fire: function() {
-
-        var rice = this.rices.getFirstExists(false);
-
-        if (rice)
-        {
-            rice.frame = this.game.rnd.integerInRange(0,6);
-            rice.exists = true;
-            rice.reset(this.game.world.randomX, 0);
-            //rice.body.bounce.y = 0.8;
-        }
-
-    },*/
+    
     init: function(){
 
     },
     create: function() {
-
-
+        
         this.background = this.game.add.sprite(game.world.centerX, game.world.centerY, 'background-main').anchor.set(0.5);
         this.finish = false;
         this.update_rice = 0;
         this.riceInBowl = new Array();
-        var speedbar_config = {x: 650, y: 30, speed: 30};
+        var speedbar_config = {x: 650, y: 5, goal: 25};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
         //this.speedbar.setPercent(50);
         //this.speedbar.setPercent(30);

@@ -1,7 +1,7 @@
 /**
  * Created by User on 16.04.2016.
  */
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render, init: init });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'RiceRain', { preload: preload, create: create, update: update, render: render, init: init });
 
 function preload() {
     game.load.image('floor', 'assets/floor.png');

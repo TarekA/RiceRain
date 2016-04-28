@@ -85,9 +85,9 @@ SpeedBar.prototype.setPosition = function (x, y) {
 
 SpeedBar.prototype.setPercent = function(new_value){
     if(new_value < 0) new_value = 0;
-    if(new_value > 25) new_value = 25;
+    if(new_value > this.config.goal) new_value = this.config.goal;
 
-    var new_width =  (new_value*3 * this.config.width) / 100 + new_value; //this.config.width
+    var new_width = (new_value/this.config.goal*this.config.width);
 
     this.setWidth(new_width);
 };
