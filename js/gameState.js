@@ -36,9 +36,6 @@ gameState.prototype = {
         this.riceInBowl = new Array();
         var speedbar_config = {x: 650, y: 5, goal: 25};
         this.speedbar = new SpeedBar(this.game, speedbar_config);
-        //this.speedbar.setPercent(50);
-        //this.speedbar.setPercent(30);
-
 
 
         // ADD SOUND
@@ -47,13 +44,6 @@ gameState.prototype = {
         this.background_music = new Phaser.Sound(game,'background_music',1,true);
         this.background_music.play();
         this.bomb_audio = game.add.audio('bomb');
-        //this.rice.play();
-
-        //this.load.setPreloadSprite(this.speedbar);
-        //this.speedbar.anchor.setTo(0,0);
-        //this.game.add.existing(this.speedbar);
-
-        //this.game.add(this.speedbar);
 
         this.dish_speed = 350;
         this.points = 0;
@@ -67,21 +57,8 @@ gameState.prototype = {
         this.dropCounter = 100;
         this.fairy = new Fairy(this, this.game, 10, 10, 500, 150, 100);
 
-        //Resize Fairy:
-        //this.fairy.anchor.setTo(0, 0);
-        //this.fairy.scale.setTo(2, 2);
 
         this.game.add.existing(this.fairy);
-        
-        //this.fairy.animations.add('fly');
-        //this.fairy.animations.play('fly', 30, true);
-
-        //this.game.stage.backgroundColor = '#fff';
-        //var spriteMaterial = this.game.physics.p2.createMaterial('spriteMaterial');
-        //var worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
-        //var contactMaterial = this.game.physics.p2.createContactMaterial(spriteMaterial, worldMaterial, { restitution: 1.0 })
-
-        //this.game.physics.p2.setWorldMaterial(worldMaterial);
 
         this.game.stage.backgroundColor = '#f9f9f9';
 
@@ -100,16 +77,10 @@ gameState.prototype = {
         this.rices = this.game.add.group();
         this.bombs = this.game.add.group();
 
-        //this.game.time.events.loop(Phaser.Timer.SECOND, this.createRice(), this);
-        //this.game.time.events.repeat(Phaser.Timer.SECOND, 100, this.createRice, this); // 100mal
-
-        // this.game.physics.p2.updateBoundsCollisionGroup();
         this.game.physics.p2.gravity.y = 300;
         this.game.physics.p2.enable(this.rices);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
-        //this.game.time.events.loop(150, this.fire, this);
-        //this.game.time.events.repeat((Phaser.Timer.SECOND*5), 100, this.createFairy, this);
         this.game.add.text(16, 16, 'Left / Right to move', { font: '18px Arial', fill: '#000' });
         this.printPoints = this.game.add.text(200,16, 0, {font: '24px Arial', fill: '#FF0000'});
         this.printDropCounter = this.game.add.text(240,16, this.dropCounter, {font: '24px Arial', fill: '#00FF00'});
@@ -120,8 +91,6 @@ gameState.prototype = {
 
         console.log("Collision detected");
         this.dish.body.y = 545;
-        //this.dish.body.velocity.y = 0;
-       // this.dish.addChild(bowl);
         rice.data.gravityScale = 3.0;
         if(!rice.sprite.sound_played) {
             if (this.checkInsideDish(rice.sprite, this.dish.x, this.dish.y)) {
@@ -170,17 +139,10 @@ gameState.prototype = {
         this.game.physics.arcade.collide(this.dish, this.rice, null, this.reflect, this);
         this.dish.body.setZeroVelocity();
 
-        //var diff_points = 0;
-        //diff_points = this.points - this.current_points;
         this.dish_speed = 400 - (400 * (this.points)) / 100;
         console.log(this.dish_speed);
 
-        //for (var i = 0; i < 250; i++) {
 
-        //}
-        //this.createRice();
-
-        //this.dish.body.velocity.x = 0;
         if (this.cursors.left.isDown)
         {
             //this.dish.body.velocity.x = -400;
@@ -194,6 +156,7 @@ gameState.prototype = {
 
 
         this.rices.forEachAlive(this.checkBounds, this);
+        this.bombs.forEachAlive(this.checkBombBounds, this);
         this.update_rice++;
         if(this.update_rice == 30){
             this.update_rice = 0;
@@ -217,15 +180,13 @@ gameState.prototype = {
         {
             rice.kill();
         }
+    },
 
-        /*if(rice.x < 10) {
-            rice.kill();
+    checkBombBounds: function (bomb) {
+        if(bomb.y > 592)
+        {
+            bomb.kill();
         }
-
-        if(rice.x > 790) {
-            rice.kill();
-        }*/
-
     },
 
     render: function() {
@@ -262,7 +223,7 @@ gameState.prototype = {
         //var position_x = this.game.rnd.integerInRange(5,595);
 
         var isBomb = false;
-        var bad_rice_random = game.rnd.integerInRange(1, 10);
+        var bad_rice_random = game.rnd.integerInRange(1, 5);
         if(bad_rice_random == 5)
         {
             isBomb = true;
@@ -353,23 +314,7 @@ gameState.prototype = {
             var rice = this.riceInBowl[i];
             rice.kill();
         }
-        // try {
-        //     console.log("dish");
-        //     dish.sprite.sound_played = false;
-        //     //dish.sprite.kill();
-        // }
-        // catch (err){
-        //
-        // }
 
-        // try {
-        //     console.log("rice");
-        //     rice.sprite.sound_played = false;
-        //     rice.sprite.kill();
-        // }
-        // catch (err){
-        //
-        // }
 
     },
     riceBadCaughtOnRice: function (bomb, rise) {
@@ -377,19 +322,6 @@ gameState.prototype = {
         bomb.sprite.kill();
         rise.sprite.kill();
 
-    },
-    createFloor: function () {
-        /*this.floor = this.game.add.sprite(0, 590, 'floor');
-        this.game.physics.p2.enable([this.floor], true); // false
-        this.floor.body.data.gravityScale = 0;
-        this.floor.body.fixedRotation = true; // fixedRotation = true --> dish is fix
-        this.floor.body.allowGravity = 0;
-        this.floor.body.setCollisionGroup(this.floorCollisionGroup);
-        this.floor.body.collideWorldBounds = true;*/
-
-        this.floor = new Phaser.Rectangle(0, 595, 800, 5);
-        this.game.physics.p2.enable([this.floor], true); // false
-        this.floor.enableBody = true;
     },
 
     calculateRice: function() {
@@ -420,10 +352,6 @@ gameState.prototype = {
         this.game.physics.p2.enable([this.floor], false); // false - true zeigt den Debugger an
         this.floor.enableBody = true;
         //this.floor.body.setCollisionGroup(this.floorCollisionGroup);
-    },
-    createRice2: function(){
-        console.log('rice');
-        new Rice(this.game, this.position.x, this.position.y);
     },
 
     createFairy: function(){
