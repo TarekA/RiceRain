@@ -225,7 +225,7 @@ gameState.prototype = {
         //var position_x = this.game.rnd.integerInRange(5,595);
 
         var isBomb = false;
-        var bad_rice_random = game.rnd.integerInRange(1, 5);
+        var bad_rice_random = game.rnd.integerInRange(1, 10);
         if(bad_rice_random == 5)
         {
             isBomb = true;
