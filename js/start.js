@@ -30,6 +30,8 @@ function preload() {
     game.load.video('vid_gameOver', 'assets/vids/gameover.mp4');
     game.load.image('fairy_effect', 'assets/particles/blue.png');
     game.load.image('background-main', 'assets/gfx/gamescreen-bg-800x600.png');
+    game.load.spritesheet('explosion', 'assets/explosion.png', 100,100,81);
+    game.load.spritesheet('button_bomb', 'assets/spritesheets/start_bomb_btn.png', 200, 40);
 }
 
 function create(){

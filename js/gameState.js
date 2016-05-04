@@ -21,12 +21,15 @@ var gameState = function(game){
     this.riceInBowl;
     this.update_rice;
     this.goal = 25;
+    this.explosion;
+    this.with_bomb;
 }
 
 gameState.prototype = {
     
-    init: function(){
-
+    init: function(with_bomb){
+        this.with_bomb = with_bomb;
+        console.log(this.with_bomb);
     },
     create: function() {
         
@@ -223,13 +226,15 @@ gameState.prototype = {
         //rices.createMultiple(250, 'gain', 0, false);
 
         //var position_x = this.game.rnd.integerInRange(5,595);
-
         var isBomb = false;
-        var bad_rice_random = game.rnd.integerInRange(1, 10);
-        if(bad_rice_random == 5)
-        {
-            isBomb = true;
+        if(this.with_bomb){
+            var bad_rice_random = game.rnd.integerInRange(1, 10);
+            if(bad_rice_random == 5)
+            {
+                isBomb = true;
+            }
         }
+
 
         if(isBomb)
         {
@@ -306,6 +311,11 @@ gameState.prototype = {
         try {
             console.log("bomb");
             bomb.sprite.sound_played = true;
+
+            console.log("explosion")
+            this.explosion = this.game.add.sprite(bomb.sprite.x-50, bomb.sprite.y-50, 'explosion');
+            var explode = this.explosion.animations.add('explode');
+            this.explosion.animations.play('explode', 81, false);
             bomb.sprite.kill();
         }
         catch (err){
